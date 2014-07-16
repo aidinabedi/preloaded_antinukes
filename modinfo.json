@@ -1,0 +1,13 @@
+{
+  "author": "wondible",
+  "build": "68767",
+  "context": "server",
+  "date": "2014/07/16",
+  "description": "Allow the game host to create and control units.",
+  "display_name": "Puppetmaster",
+  "forum": null,
+  "identifier": "com.wondible.pa.puppetmaster",
+  "signature": "not yet implemented",
+  "version": "0.1.0"
+}
+
