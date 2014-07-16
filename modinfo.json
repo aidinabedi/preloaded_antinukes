@@ -3,7 +3,7 @@
   "build": "68767",
   "context": "server",
   "date": "2014/07/16",
-  "description": "Allow the game host to create and control units.",
+  "description": "Allow specators to create and control units.",
   "display_name": "Puppetmaster",
   "forum": null,
   "identifier": "com.wondible.pa.puppetmaster",
