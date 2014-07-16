@@ -13,4 +13,5 @@ PA will upload **all files** in the mod directory, including `node_modules` and 
 - copy:common - copy the current common.js into the mod
 - hackCommon - append the mod hook to common.js
 - copy:mod - copy the mod files into server_mods
+- copy:back - copy puppetmaster.js back from the execution directory, to allow streamlined development
 - default: copy:common, hackCommon, copy:mod

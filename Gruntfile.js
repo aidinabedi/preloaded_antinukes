@@ -7,6 +7,7 @@ var stream = 'stable'
 var media = require('./lib/path').media(stream)
 var build = 'ui/main/shared/js/build.js'
 var common = 'ui/main/shared/js/common.js'
+var puppetmaster = 'ui/mods/puppetmaster/puppetmaster.js'
 
 module.exports = function(grunt) {
   // Project configuration.
@@ -17,6 +18,14 @@ module.exports = function(grunt) {
           {
             src: media + common,
             dest: common,
+          },
+        ],
+      },
+      back: {
+        files: [
+          {
+            src: modPath + puppetmaster,
+            dest: puppetmaster,
           },
         ],
       },
