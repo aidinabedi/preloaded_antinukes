@@ -6,16 +6,17 @@ var modPath = '../../server_mods/com.wondible.pa.puppetmaster/'
 var stream = 'stable'
 var media = require('./lib/path').media(stream)
 var build = 'ui/main/shared/js/build.js'
+var common = 'ui/main/shared/js/common.js'
 
 module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     copy: {
-      build: {
+      common: {
         files: [
           {
-            src: media + build,
-            dest: build,
+            src: media + common,
+            dest: common,
           },
         ],
       },
@@ -28,7 +29,7 @@ module.exports = function(grunt) {
               'README.md',
               'CHANGELOG.md',
               'ui/**',
-              'pa/**'],
+              'server-script/**'],
             dest: modPath,
           },
         ],
@@ -97,13 +98,14 @@ module.exports = function(grunt) {
     }
   })
 
-  grunt.registerTask('patch_67998', 'fixup specs for PTE changes', function() {
-    var patch = require('./lib/patch_67998')
-    patch.fixSpecs(grunt)
+  grunt.registerTask('hackCommon', 'Add mod hook to common.js', function() {
+    var text = grunt.file.read(common)
+    text += "\nscene_mod_list['live_game'].push('coui://ui/mods/puppetmaster/puppetmaster.js');"
+    grunt.file.write(common, text)
   })
 
   // Default task(s).
-  grunt.registerTask('default', ['json_schema', 'jsonlint']);
+  grunt.registerTask('default', ['copy:common', 'hackCommon', 'copy:mod']);
 
 };
 
