@@ -7,7 +7,7 @@ var stream = 'stable'
 var media = require('./lib/path').media(stream)
 var build = 'ui/main/shared/js/build.js'
 var common = 'ui/main/shared/js/common.js'
-var puppetmaster = 'ui/mods/puppetmaster/puppetmaster.js'
+var live_game = 'ui/mods/puppetmaster/live_game.js'
 
 module.exports = function(grunt) {
   // Project configuration.
@@ -24,8 +24,8 @@ module.exports = function(grunt) {
       back: {
         files: [
           {
-            src: modPath + puppetmaster,
-            dest: puppetmaster,
+            src: modPath + live_game,
+            dest: live_game,
           },
         ],
       },
@@ -109,8 +109,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('hackCommon', 'Add mod hook to common.js', function() {
     var text = grunt.file.read(common)
-    text += "\nscene_mod_list['live_game'].push('coui://ui/mods/puppetmaster/puppetmaster.js');"
-    grunt.file.write(common, text)
+    var ext = grunt.file.read('common_extensions.js')
+    grunt.file.write(common, text + ext)
   })
 
   // Default task(s).
