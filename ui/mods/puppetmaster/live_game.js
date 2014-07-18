@@ -1,15 +1,25 @@
 (function() {
   console.log('puppetmaster')
 
+  var puppetmaster = engine.call
+  var puppet = function(method) {
+    if (method == 'unit.debug.paste') {
+      console.log("Sorry, you're a puppet")
+      return undefined;
+    } else {
+      return puppetmaster.apply(this, arguments);
+    }
+  }
+
   model.sandbox(model.cheatAllowCreateUnit())
-  engine.call = engine.puppetmaster
+  engine.call = puppetmaster
 
   var disableAllCheats = function() {
     model.devMode(false)
     model.cheatAllowChangeControl(false)
     model.cheatAllowCreateUnit(false)
     model.sandbox(false)
-    engine.call = engine.puppet
+    engine.call = puppet
   }
 
   if (model.isSpectator() == false) {
