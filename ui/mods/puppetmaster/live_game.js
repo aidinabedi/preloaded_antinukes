@@ -3,14 +3,13 @@
 
   var mouseX = 0
   var mouseY = 0
+  var hdeck = model.holodeck
 
-  var originalMousemove = model.globalMousemoveHandler
-  model.globalMousemoveHandler = function(m, e) {
+  var mousetrack = function(e) {
     mouseX = e.offsetX
     mouseY = e.offsetY
-    originalMousemove(e)
+    hdeck = $(this).data('holodeck')
   }
-
 
   var engineCall = engine.call
   var puppet = function(method) {
@@ -23,7 +22,7 @@
   }
   var puppetmaster = function(method) {
     if (method == 'unit.debug.paste') {
-      setTimeout(function() {model.holodeck.unitCommand('ping', mouseX, mouseY, false)}, 0)
+      setTimeout(function() {hdeck.unitCommand('ping', mouseX, mouseY, false)}, 0)
     }
 
     return engineCall.apply(this, arguments);
@@ -31,6 +30,7 @@
 
   model.sandbox(model.cheatAllowCreateUnit())
   engine.call = puppetmaster
+  $('body').on('mousemove', 'holodeck', mousetrack)
 
   var disableAllCheats = function() {
     model.devMode(false)
@@ -38,6 +38,7 @@
     model.cheatAllowCreateUnit(false)
     model.sandbox(false)
     engine.call = puppet
+    $('body').off('mousemove', 'holodeck', mousetrack)
   }
 
   if (model.isSpectator() == false) {
