@@ -2,12 +2,12 @@
   "author": "wondible",
   "build": "68767",
   "context": "server",
-  "date": "2014/07/18",
+  "date": "2014/07/19",
   "description": "Allow specators to create and control units.",
   "display_name": "Puppetmaster",
   "forum": "https://forums.uberent.com/threads/wip-server-puppetmaster.62005/",
   "identifier": "com.wondible.pa.puppetmaster",
   "signature": "not yet implemented",
-  "version": "0.3.0"
+  "version": "0.4.0"
 }
 
