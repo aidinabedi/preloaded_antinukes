@@ -23,6 +23,23 @@
     }
   }
 
+  var pasteCount = ko.observable(0)
+  pasteCount.subscribe(function(count) {
+    api.panels.devmode && api.panels.devmode.message('pasteCount', count);
+  })
+  var pasteReset = null
+  var resetCount = function() {
+    console.log('reset')
+    pasteCount(0)
+    clearTimeout(pasteReset)
+    pasteReset = null
+  }
+  var increment = function() {
+    pasteCount(pasteCount() + 1)
+    clearTimeout(pasteReset)
+    pasteReset = setTimeout(resetCount, 2000)
+  }
+
   var engineCall = engine.call
   var puppet = function(method) {
     if (method == 'unit.debug.paste') {
@@ -34,6 +51,7 @@
   }
   var puppetmaster = function(method) {
     if (method == 'unit.debug.paste') {
+      increment()
       maybePing()
     }
 
