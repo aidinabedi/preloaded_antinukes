@@ -11,6 +11,18 @@
     hdeck = $(this).data('holodeck')
   }
 
+  var lastPingTime = 0
+  var ping = function() {
+    lastPingTime = Date.now()
+    hdeck.unitCommand('ping', mouseX, mouseY, false)
+  }
+
+  var maybePing = function() {
+    if (Date.now() - lastPingTime > 500) {
+      setTimeout(ping, 0)
+    }
+  }
+
   var engineCall = engine.call
   var puppet = function(method) {
     if (method == 'unit.debug.paste') {
@@ -22,7 +34,7 @@
   }
   var puppetmaster = function(method) {
     if (method == 'unit.debug.paste') {
-      setTimeout(function() {hdeck.unitCommand('ping', mouseX, mouseY, false)}, 0)
+      maybePing()
     }
 
     return engineCall.apply(this, arguments);
