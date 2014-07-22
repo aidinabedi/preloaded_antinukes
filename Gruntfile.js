@@ -9,6 +9,7 @@ var build = 'ui/main/shared/js/build.js'
 var common = 'ui/main/shared/js/common.js'
 var live_game = 'ui/mods/puppetmaster/live_game.js'
 var live_game_devmode = 'ui/mods/puppetmaster/live_game_devmode.js'
+var live_game_players = 'ui/mods/puppetmaster/live_game_players.js'
 
 module.exports = function(grunt) {
   // Project configuration.
@@ -31,6 +32,10 @@ module.exports = function(grunt) {
           {
             src: modPath + live_game_devmode,
             dest: live_game_devmode,
+          },
+          {
+            src: modPath + live_game_players,
+            dest: live_game_players,
           },
         ],
       },

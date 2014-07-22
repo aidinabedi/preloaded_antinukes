@@ -972,6 +972,8 @@ $(document).ready(function () {
   unshift('coui://ui/mods/puppetmaster/live_game.js');
 (scene_mod_list['live_game_devmode'] = scene_mod_list['live_game_devmode'] || []).
   unshift('coui://ui/mods/puppetmaster/live_game_devmode.js');
+(scene_mod_list['live_game_players'] = scene_mod_list['live_game_players'] || []).
+  unshift('coui://ui/mods/puppetmaster/live_game_players.js');
 
 if (window.location.href != 'coui://ui/main/game/live_game/live_game.html') {
   (function() {

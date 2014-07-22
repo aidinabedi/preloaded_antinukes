@@ -81,4 +81,11 @@
       disableAllCheats()
     }
   })
+
+  handlers.puppetmasterSpectatorPanelOpened = function() {
+    if (model.cheatAllowChangeControl()) {
+      model.observerModeCalledOnce(false)
+      model.startObserverMode()
+    }
+  }
 })()
