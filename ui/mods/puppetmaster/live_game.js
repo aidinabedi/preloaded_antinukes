@@ -29,7 +29,6 @@
   })
   var pasteReset = null
   var resetCount = function() {
-    console.log('reset')
     pasteCount(0)
     clearTimeout(pasteReset)
     pasteReset = null
@@ -58,8 +57,16 @@
     return engineCall.apply(this, arguments);
   }
 
+  var hasBeenPlayer = !model.isSpectator()
+
+  model.isSpectator.subscribe(function(value) {
+    if (value == false) {
+      hasBeenPlayer = true
+    }
+  })
+
   var enableCheats = function() {
-    if (!model.isSpectator()) return
+    if (hasBeenPlayer) return
 
     model.cheatAllowChangeControl(true)
     model.cheatAllowCreateUnit(true)
@@ -89,7 +96,6 @@
   var hackInKeybinding = function(group, key) {
     var action = action_sets[group][key]
     var binding = default_keybinds[group][key]
-    console.log(group, key, action, binding, action_sets, default_keybinds)
     var alt
     var use_alt
 
