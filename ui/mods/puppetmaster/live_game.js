@@ -58,11 +58,17 @@
     return engineCall.apply(this, arguments);
   }
 
-  model.sandbox(model.cheatAllowCreateUnit())
-  engine.call = puppetmaster
-  $('body').on('mousemove', 'holodeck', mousetrack)
+  var enableCheats = function() {
+    if (!model.isSpectator()) return
 
-  var disableAllCheats = function() {
+    model.cheatAllowChangeControl(true)
+    model.cheatAllowCreateUnit(true)
+    model.sandbox(true)
+    engine.call = puppetmaster
+    $('body').on('mousemove', 'holodeck', mousetrack)
+  }
+
+  var disableCheats = function() {
     model.devMode(false)
     model.cheatAllowChangeControl(false)
     model.cheatAllowCreateUnit(false)
@@ -71,16 +77,47 @@
     $('body').off('mousemove', 'holodeck', mousetrack)
   }
 
-  if (model.isSpectator() == false) {
-    disableAllCheats()
+  var toggleCheats = function() {
+    console.log('toggle')
+    if (model.cheatAllowCreateUnit()) {
+      disableCheats()
+    } else {
+      enableCheats()
+    }
   }
 
-  model.isSpectator.subscribe(function(value) {
-    console.log('spectator', value)
-    if (value == false) {
-      disableAllCheats()
+  var hackInKeybinding = function(group, key) {
+    var action = action_sets[group][key]
+    var binding = default_keybinds[group][key]
+    console.log(group, key, action, binding, action_sets, default_keybinds)
+    var alt
+    var use_alt
+
+    if (localStorage['keybinding_' + key] !== undefined)
+      binding = decode(localStorage['keybinding_' + key]);
+
+    if (binding && binding.length === 1) {
+      alt = binding;
+      alt = [alt.toLowerCase(), alt.toUpperCase()];
+
+      if (alt[0] !== alt[1]) {
+        use_alt = true;
+      }
     }
-  })
+
+    var dictionary = input_maps[group].dictionary
+    if (use_alt) {
+      dictionary[alt[0]] = action
+      dictionary[alt[1]] = action
+    } else {
+      dictionary[binding] = action
+    }
+
+    input_maps[group].keymap[binding] = key;
+  }
+
+  action_sets.hacks['toggle puppetmaster'] = toggleCheats
+  hackInKeybinding('hacks', 'toggle puppetmaster')
 
   handlers.puppetmasterSpectatorPanelOpened = function() {
     if (model.cheatAllowChangeControl()) {
@@ -88,4 +125,6 @@
       model.startObserverMode()
     }
   }
+
+  disableCheats()
 })()
