@@ -5,6 +5,7 @@
   var mouseY = 0
   var hdeck = model.holodeck
   var puppetmasterSelectedUnit = ko.observable('')
+  var puppetmasterLastHover = ''
 
   var mousetrack = function(e) {
     mouseX = e.offsetX
@@ -69,6 +70,8 @@
     if (method == 'unit.debug.paste') {
       increment()
       maybePing()
+    } else if (method == 'unit.debug.copy') {
+      puppetmasterSelectedUnit(puppetmasterLastHover)
     }
 
     return engineCall.apply(this, arguments);
@@ -123,6 +126,15 @@
   handlers.puppetmasterUnitSelected = function(spec) {
     var parts = spec.split('/')
     puppetmasterSelectedUnit(parts[parts.length-1].split('.')[0])
+  }
+
+  var liveGameHover = handlers.hover
+  handlers.hover = function(payload) {
+    liveGameHover(payload)
+
+    if (payload && payload.name) {
+      puppetmasterLastHover = payload.name
+    }
   }
 
   disableCheats()
