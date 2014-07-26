@@ -29,6 +29,9 @@
   })
   var pasteReset = null
   var resetCount = function() {
+    model.send_message("team_chat_message",
+      {message: "paste " + pasteCount()});
+
     pasteCount(0)
     clearTimeout(pasteReset)
     pasteReset = null
