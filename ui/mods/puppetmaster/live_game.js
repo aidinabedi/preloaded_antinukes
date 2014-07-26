@@ -23,14 +23,27 @@
     }
   }
 
+  var announceGift = function(who, count, what) {
+    model.send_message("team_chat_message",
+      {message: who + ' gets ' + count.toString() + ' ' + what });
+  }
+
+  var selectedPlayer = ko.computed(function() {
+    var index = model.playerControlFlags().indexOf(true)
+    if (index == -1) {
+      return 'nobody'
+    } else {
+      return model.players()[index].name
+    }
+  })
+
   var pasteCount = ko.observable(0)
   pasteCount.subscribe(function(count) {
     api.panels.devmode && api.panels.devmode.message('pasteCount', count);
   })
   var pasteReset = null
   var resetCount = function() {
-    model.send_message("team_chat_message",
-      {message: "paste " + pasteCount()});
+    announceGift(selectedPlayer(), pasteCount(), 'something')
 
     pasteCount(0)
     clearTimeout(pasteReset)
