@@ -124,8 +124,10 @@
   }
 
   handlers.puppetmasterUnitSelected = function(spec) {
-    var parts = spec.split('/')
-    puppetmasterSelectedUnit(parts[parts.length-1].split('.')[0])
+    var unit = model.unitSpecs[spec]
+    if (unit && unit.name) {
+      puppetmasterSelectedUnit(unit.name)
+    }
   }
 
   var liveGameHover = handlers.hover
