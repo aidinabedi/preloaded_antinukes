@@ -93,37 +93,8 @@
     }
   }
 
-  var hackInKeybinding = function(group, key) {
-    var action = action_sets[group][key]
-    var binding = default_keybinds[group][key]
-    var alt
-    var use_alt
-
-    if (localStorage['keybinding_' + key] !== undefined)
-      binding = decode(localStorage['keybinding_' + key]);
-
-    if (binding && binding.length === 1) {
-      alt = binding;
-      alt = [alt.toLowerCase(), alt.toUpperCase()];
-
-      if (alt[0] !== alt[1]) {
-        use_alt = true;
-      }
-    }
-
-    var dictionary = input_maps[group].dictionary
-    if (use_alt) {
-      dictionary[alt[0]] = action
-      dictionary[alt[1]] = action
-    } else {
-      dictionary[binding] = action
-    }
-
-    input_maps[group].keymap[binding] = key;
-  }
-
   action_sets.hacks['toggle puppetmaster'] = toggleCheats
-  hackInKeybinding('hacks', 'toggle puppetmaster')
+  api.Panel.message('', 'inputmap.reload');
 
   handlers.puppetmasterSpectatorPanelOpened = function() {
     if (model.cheatAllowChangeControl()) {
