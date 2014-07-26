@@ -12,6 +12,10 @@ if (window.location.href != 'coui://ui/main/game/live_game/live_game.html') {
   (function() {
     var originalCall = engine.call
     engine.call = function(method) {
+      if (method == 'unit.debug.setSpecId') {
+        api.Panel.message(api.Panel.parentId, 'puppetmasterUnitSelected', arguments[1]); 
+      }
+
       if (method == 'unit.debug.paste') {
         console.log("Sorry, you're a puppet")
         return undefined;

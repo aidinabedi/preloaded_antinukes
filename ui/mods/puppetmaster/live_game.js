@@ -4,6 +4,7 @@
   var mouseX = 0
   var mouseY = 0
   var hdeck = model.holodeck
+  var puppetmasterSelectedUnit = ko.observable('')
 
   var mousetrack = function(e) {
     mouseX = e.offsetX
@@ -43,7 +44,7 @@
   })
   var pasteReset = null
   var resetCount = function() {
-    announceGift(selectedPlayer(), pasteCount(), 'something')
+    announceGift(selectedPlayer(), pasteCount(), puppetmasterSelectedUnit())
 
     pasteCount(0)
     clearTimeout(pasteReset)
@@ -117,6 +118,11 @@
       model.observerModeCalledOnce(false)
       model.startObserverMode()
     }
+  }
+
+  handlers.puppetmasterUnitSelected = function(spec) {
+    var parts = spec.split('/')
+    puppetmasterSelectedUnit(parts[parts.length-1].split('.')[0])
   }
 
   disableCheats()
