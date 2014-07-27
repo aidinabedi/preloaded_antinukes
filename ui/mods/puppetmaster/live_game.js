@@ -6,6 +6,7 @@
   var hdeck = model.holodeck
   var selectedUnit = ko.observable('')
   var lastHover = ''
+  var previousPlayerControl = -1
 
   var mousetrack = function(e) {
     mouseX = e.offsetX
@@ -116,10 +117,15 @@
   action_sets.hacks['toggle puppetmaster'] = toggleCheats
   api.Panel.message('', 'inputmap.reload');
 
-  handlers.puppetmasterSpectatorPanelOpened = function() {
+  handlers.puppetmasterSpectatorPanelStatus = function(status) {
     if (model.cheatAllowChangeControl()) {
-      model.observerModeCalledOnce(false)
-      model.startObserverMode()
+      if (status) {
+        previousPlayerControl = model.playerControlFlags().indexOf(true)
+        model.observerModeCalledOnce(false)
+        model.startObserverMode()
+      } else if (previousPlayerControl != -1) {
+        api.panels.devmode.message('puppetmasterRestoreControl', previousPlayerControl)
+      }
     }
   }
 

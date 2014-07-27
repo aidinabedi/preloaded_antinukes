@@ -8,4 +8,7 @@
   handlers.pasteCount = function(count) {
     model.pasteCount(count)
   }
+
+  handlers.puppetmasterRestoreControl = model.updatePlayerControlFlag
+
 })()
