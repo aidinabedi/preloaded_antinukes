@@ -4,8 +4,8 @@
   var mouseX = 0
   var mouseY = 0
   var hdeck = model.holodeck
-  var puppetmasterSelectedUnit = ko.observable('')
-  var puppetmasterLastHover = ''
+  var selectedUnit = ko.observable('')
+  var lastHover = ''
 
   var mousetrack = function(e) {
     mouseX = e.offsetX
@@ -45,7 +45,7 @@
   })
   var pasteReset = null
   var resetCount = function() {
-    announceGift(selectedPlayer(), pasteCount(), puppetmasterSelectedUnit())
+    announceGift(selectedPlayer(), pasteCount(), selectedUnit())
 
     pasteCount(0)
     clearTimeout(pasteReset)
@@ -71,7 +71,7 @@
       increment()
       maybePing()
     } else if (method == 'unit.debug.copy') {
-      puppetmasterSelectedUnit(puppetmasterLastHover)
+      selectedUnit(lastHover)
     }
 
     return engineCall.apply(this, arguments);
@@ -126,7 +126,7 @@
   handlers.puppetmasterUnitSelected = function(spec) {
     var unit = model.unitSpecs[spec]
     if (unit && unit.name) {
-      puppetmasterSelectedUnit(unit.name)
+      selectedUnit(unit.name)
     }
   }
 
@@ -135,7 +135,7 @@
     liveGameHover(payload)
 
     if (payload && payload.name) {
-      puppetmasterLastHover = payload.name
+      lastHover = payload.name
     }
   }
 
