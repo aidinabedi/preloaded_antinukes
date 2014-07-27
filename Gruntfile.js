@@ -48,6 +48,7 @@ module.exports = function(grunt) {
               'README.md',
               'CHANGELOG.md',
               'ui/**',
+              'pa/**',
               'server-script/**'],
             dest: modPath,
           },
