@@ -8,6 +8,9 @@
 action_sets.hacks['toggle puppetmaster'] = function () {} // stub
 default_keybinds.hacks['toggle puppetmaster'] = 'alt+ctrl+shift+p'
 
+action_sets.hacks['paste ten units'] = function () {} // stub
+default_keybinds.hacks['paste ten units'] = 'shift+ctrl+v'
+
 if (window.location.href != 'coui://ui/main/game/live_game/live_game.html') {
   (function() {
     var originalCall = engine.call

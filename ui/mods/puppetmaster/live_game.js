@@ -46,6 +46,17 @@
     engineCall("unit.debug.setSpecId", selectedUnit.spec)
   }
 
+  var pasteTen = function() {
+    if (model.cheatAllowCreateUnit()) {
+      dropPod()
+      for (var i = 0;i < 10;i++) {
+        engineCall("unit.debug.paste")
+      }
+      increment(10)
+      maybePing()
+    }
+  }
+
   var pasteCount = ko.observable(0)
   pasteCount.subscribe(function(count) {
     api.panels.devmode && api.panels.devmode.message('pasteCount', count);
@@ -58,8 +69,8 @@
     clearTimeout(pasteReset)
     pasteReset = null
   }
-  var increment = function() {
-    pasteCount(pasteCount() + 1)
+  var increment = function(n) {
+    pasteCount(pasteCount() + n)
     clearTimeout(pasteReset)
     pasteReset = setTimeout(resetCount, 2000)
   }
@@ -76,7 +87,7 @@
   var puppetmaster = function(method) {
     if (method == 'unit.debug.paste') {
       dropPod()
-      increment()
+      increment(1)
       maybePing()
     } else if (method == 'unit.debug.copy') {
       selectedUnit = lastHover
@@ -122,6 +133,7 @@
   }
 
   action_sets.hacks['toggle puppetmaster'] = toggleCheats
+  action_sets.hacks['paste ten units'] = pasteTen
   api.Panel.message('', 'inputmap.reload');
 
   handlers.puppetmasterSpectatorPanelStatus = function(status) {
