@@ -4,8 +4,10 @@
   var mouseX = 0
   var mouseY = 0
   var hdeck = model.holodeck
-  var selectedUnit = ko.observable('')
-  var lastHover = ''
+  var selectedUnitName = ''
+  var selectedUnitSpec = ''
+  var lastHoverName = ''
+  var lastHoverSpec = ''
   var previousPlayerControl = -1
 
   var mousetrack = function(e) {
@@ -40,13 +42,19 @@
     }
   })
 
+  var dropPod = function() {
+    engineCall("unit.debug.setSpecId", "/pa/puppetmaster/drop_pod.json")
+    engineCall("unit.debug.paste")
+    engineCall("unit.debug.setSpecId", selectedUnitSpec)
+  }
+
   var pasteCount = ko.observable(0)
   pasteCount.subscribe(function(count) {
     api.panels.devmode && api.panels.devmode.message('pasteCount', count);
   })
   var pasteReset = null
   var resetCount = function() {
-    announceGift(selectedPlayer(), pasteCount(), selectedUnit())
+    announceGift(selectedPlayer(), pasteCount(), selectedUnitName)
 
     pasteCount(0)
     clearTimeout(pasteReset)
@@ -69,10 +77,12 @@
   }
   var puppetmaster = function(method) {
     if (method == 'unit.debug.paste') {
+      dropPod()
       increment()
       maybePing()
     } else if (method == 'unit.debug.copy') {
-      selectedUnit(lastHover)
+      selectedUnitName = lastHoverName
+      selectedUnitSpec = lastHoverSpec
     }
 
     return engineCall.apply(this, arguments);
@@ -130,9 +140,10 @@
   }
 
   handlers.puppetmasterUnitSelected = function(spec) {
+    selectedUnitSpec = spec
     var unit = model.unitSpecs[spec]
     if (unit && unit.name) {
-      selectedUnit(unit.name)
+      selectedUnitName = unit.name
     }
   }
 
@@ -140,8 +151,13 @@
   handlers.hover = function(payload) {
     liveGameHover(payload)
 
-    if (payload && payload.name) {
-      lastHover = payload.name
+    if (payload) {
+      if (payload.spec_id) {
+        lastHoverSpec = payload.spec_id
+      }
+      if (payload.name) {
+        lastHoverName = payload.name
+      }
     }
   }
 

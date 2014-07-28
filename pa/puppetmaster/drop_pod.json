@@ -1,0 +1,46 @@
+{
+  "TEMP_texelinfo": 2.37699, 
+  "area_build_separation": 1.0, 
+  "area_build_type": "Sphere", 
+  "build_metal_cost": 1, 
+  "description": "Special effect", 
+  "display_name": "Drop Pod", 
+  "events": {
+    "died": {
+      "audio_cue":"/SE/Movement/commander/Commander_game_start_landing",
+      "effect_spec": "/pa/puppetmaster/drop_pod.pfx"
+    }
+  }, 
+  "max_health": 0, 
+  "mesh_bounds": [
+    4.0, 
+    4.0, 
+    1.0
+  ], 
+  "model": [
+    {
+      "filename": "/pa/units/land/land_mine/land_mine.papa", 
+      "layer": "WL_LandHorizontal"
+    }
+  ], 
+  "physics": {
+    "air_friction": 1.0, 
+    "allow_pushing": false, 
+    "ignore_collisions": true, 
+    "push_class": 0, 
+    "radius": 0.25, 
+    "type": "Structure"
+  }, 
+  "spawn_layers": "WL_LandHorizontal", 
+  "strategic_icon_priority": 3, 
+  "unit_types": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Basic",
+      "UNITTYPE_CmdBuild",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Economy"
+  ],
+  "wreckage_health_frac": 0.0
+}
+
