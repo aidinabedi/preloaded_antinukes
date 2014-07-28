@@ -41,7 +41,7 @@
   })
 
   var dropPod = function() {
-    engineCall("unit.debug.setSpecId", "/pa/puppetmaster/drop_pod.json")
+    engineCall("unit.debug.setSpecId", "/pa/puppetmaster/drop_pod_launcher.json")
     engineCall("unit.debug.paste")
     engineCall("unit.debug.setSpecId", selectedUnit.spec)
   }
