@@ -1,13 +1,10 @@
 (function() {
   console.log('puppetmaster')
 
+  // Ping / Ping throttling
   var mouseX = 0
   var mouseY = 0
   var hdeck = model.holodeck
-  var lastHover = {name: '', spec: ''}
-  var selectedUnit = lastHover
-  var previousPlayerControl = -1
-
   var mousetrack = function(e) {
     mouseX = e.offsetX
     mouseY = e.offsetY
@@ -23,6 +20,24 @@
   var maybePing = function() {
     if (Date.now() - lastPingTime > 500) {
       setTimeout(ping, 0)
+    }
+  }
+
+  // Spectator Announcement, including drop-pod effect
+  var lastHover = {name: '', spec: ''}
+  var selectedUnit = lastHover
+
+  handlers.puppetmasterUnitSelected = function(spec) {
+    var unit = model.unitSpecs[spec]
+    selectedUnit = {spec: spec, name: (unit && unit.name) || 'unknown'}
+  }
+
+  var liveGameHover = handlers.hover
+  handlers.hover = function(payload) {
+    liveGameHover(payload)
+
+    if (payload) {
+      lastHover = {spec: payload.spec_id || '', name: payload.name || 'unknown'}
     }
   }
 
@@ -46,17 +61,7 @@
     engineCall("unit.debug.setSpecId", selectedUnit.spec)
   }
 
-  var pasteTen = function() {
-    if (model.cheatAllowCreateUnit()) {
-      dropPod()
-      for (var i = 0;i < 10;i++) {
-        engineCall("unit.debug.paste")
-      }
-      increment(10)
-      maybePing()
-    }
-  }
-
+  // Count tracking
   var pasteCount = ko.observable(0)
   pasteCount.subscribe(function(count) {
     api.panels.devmode && api.panels.devmode.message('pasteCount', count);
@@ -75,6 +80,7 @@
     pasteReset = setTimeout(resetCount, 2000)
   }
 
+  // API Hook
   var engineCall = engine.call
   var puppet = function(method) {
     if (method == 'unit.debug.paste') {
@@ -86,9 +92,8 @@
   }
   var puppetmaster = function(method) {
     if (method == 'unit.debug.paste') {
-      dropPod()
-      increment(1)
-      maybePing()
+      pasteUnits(1)
+      return
     } else if (method == 'unit.debug.copy') {
       selectedUnit = lastHover
     }
@@ -96,6 +101,20 @@
     return engineCall.apply(this, arguments);
   }
 
+  var pasteUnits = function(n) {
+    if (!model.cheatAllowCreateUnit()) return
+
+    dropPod()
+    for (var i = 0;i < n;i++) {
+      engineCall("unit.debug.paste")
+    }
+    increment(n)
+    maybePing()
+  }
+
+  action_sets.hacks['paste ten units'] = function() {pasteUnits(10)}
+
+  // Power control
   var hasBeenPlayer = !model.isSpectator()
 
   model.isSpectator.subscribe(function(value) {
@@ -133,9 +152,9 @@
   }
 
   action_sets.hacks['toggle puppetmaster'] = toggleCheats
-  action_sets.hacks['paste ten units'] = pasteTen
-  api.Panel.message('', 'inputmap.reload');
 
+  // Enable spectator panel updates while open
+  var previousPlayerControl = -1
   handlers.puppetmasterSpectatorPanelStatus = function(status) {
     if (model.cheatAllowChangeControl()) {
       if (status) {
@@ -148,19 +167,6 @@
     }
   }
 
-  handlers.puppetmasterUnitSelected = function(spec) {
-    var unit = model.unitSpecs[spec]
-    selectedUnit = {spec: spec, name: (unit && unit.name) || 'unknown'}
-  }
-
-  var liveGameHover = handlers.hover
-  handlers.hover = function(payload) {
-    liveGameHover(payload)
-
-    if (payload) {
-      lastHover = {spec: payload.spec_id || '', name: payload.name || 'unknown'}
-    }
-  }
-
+  api.Panel.message('', 'inputmap.reload');
   disableCheats()
 })()
