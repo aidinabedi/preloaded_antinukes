@@ -103,6 +103,7 @@
 
   var pasteUnits = function(n) {
     if (!model.cheatAllowCreateUnit()) return
+    if (n < 1) return
 
     dropPod()
     for (var i = 0;i < n;i++) {
@@ -166,6 +167,8 @@
       }
     }
   }
+
+  model.pasteUnits = pasteUnits
 
   api.Panel.message('', 'inputmap.reload');
   disableCheats()
