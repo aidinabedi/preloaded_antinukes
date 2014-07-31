@@ -113,7 +113,10 @@
     maybePing()
   }
 
-  action_sets.hacks['paste ten units'] = function() {pasteUnits(10)}
+  model.pasteBurst = 10
+  action_sets.hacks['paste ten units'] = function() {
+    pasteUnits(model.pasteBurst)
+  }
 
   // Power control
   var hasBeenPlayer = !model.isSpectator()
