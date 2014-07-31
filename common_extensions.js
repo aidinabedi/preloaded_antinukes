@@ -4,6 +4,8 @@
   unshift('coui://ui/mods/puppetmaster/live_game_devmode.js');
 (scene_mod_list['live_game_players'] = scene_mod_list['live_game_players'] || []).
   unshift('coui://ui/mods/puppetmaster/live_game_players.js');
+(scene_mod_list['live_game_sandbox'] = scene_mod_list['live_game_sandbox'] || []).
+  unshift('coui://ui/mods/puppetmaster/live_game_sandbox.js');
 
 action_sets.hacks['toggle puppetmaster'] = function () {} // stub
 default_keybinds.hacks['toggle puppetmaster'] = 'alt+ctrl+shift+p'
