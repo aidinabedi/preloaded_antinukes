@@ -43,7 +43,7 @@
 
   var announceGift = function(who, count, what) {
     model.send_message("team_chat_message",
-      {message: who + ' gets ' + count.toString() + ' ' + what });
+      {message: ['Puppetmaster gives', who, count.toString(), what].join(' ')});
   }
 
   var selectedPlayer = ko.computed(function() {
