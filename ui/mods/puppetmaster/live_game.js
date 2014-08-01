@@ -114,8 +114,11 @@
   }
 
   model.pasteBurst = 10
-  action_sets.hacks['paste ten units'] = function() {
-    pasteUnits(model.pasteBurst)
+  // stub: for Bulk Paste Units compatibility
+  if (action_sets.hacks['bulk paste unit'].stub) {
+    action_sets.hacks['bulk paste unit'] = function() {
+      pasteUnits(model.pasteBurst)
+    }
   }
 
   // Power control

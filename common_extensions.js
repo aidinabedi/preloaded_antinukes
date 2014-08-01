@@ -7,11 +7,18 @@
 (scene_mod_list['live_game_sandbox'] = scene_mod_list['live_game_sandbox'] || []).
   unshift('coui://ui/mods/puppetmaster/live_game_sandbox.js');
 
-action_sets.hacks['toggle puppetmaster'] = function () {} // stub
-default_keybinds.hacks['toggle puppetmaster'] = 'alt+ctrl+shift+p'
+(function() {
+  // stub: for Bulk Paste Units compatibility
+  var stub = function() {}
+  stub.stub = true
 
-action_sets.hacks['paste ten units'] = function () {} // stub
-default_keybinds.hacks['paste ten units'] = 'shift+ctrl+v'
+  action_sets.hacks['toggle puppetmaster'] = stub
+  default_keybinds.hacks['toggle puppetmaster'] = 'alt+ctrl+shift+p'
+
+  action_sets.hacks['bulk paste unit'] = 
+    action_sets.hacks['bulk paste unit'] || stub
+  default_keybinds.hacks['bulk paste unit'] = 'shift+ctrl+v'
+})()
 
 if (window.location.href != 'coui://ui/main/game/live_game/live_game.html') {
   (function() {
