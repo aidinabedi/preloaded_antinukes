@@ -96,6 +96,10 @@
       return
     } else if (method == 'unit.debug.copy') {
       selectedUnit = lastHover
+    } else if (method == 'unit.debug.setSpecId') {
+      var spec = arguments[1]
+      var unit = model.unitSpecs[spec]
+      selectedUnit = {spec: spec, name: (unit && unit.name) || 'unknown'}
     }
 
     return engineCall.apply(this, arguments);
