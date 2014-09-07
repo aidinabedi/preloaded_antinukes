@@ -142,7 +142,9 @@
     model.sandbox(true)
     engine.call = puppetmaster
     $('body').on('mousemove', 'holodeck', mousetrack)
-    api.panels.sandbox && api.panels.sandbox.message('puppetmasterOpenSandbox')
+    setTimeout(function() {
+      api.panels.sandbox && api.panels.sandbox.message('puppetmasterOpenSandbox')
+    }, 100)
   }
 
   var disableCheats = function() {
