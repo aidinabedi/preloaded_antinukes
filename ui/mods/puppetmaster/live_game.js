@@ -119,8 +119,8 @@
 
   model.pasteBurst = 10
   // stub: for Bulk Paste Units compatibility
-  if (action_sets.hacks['bulk paste unit'].stub) {
-    action_sets.hacks['bulk paste unit'] = function() {
+  if (action_sets.hacks.bulk_paste_unit.stub) {
+    action_sets.hacks.bulk_paste_unit = function() {
       pasteUnits(model.pasteBurst)
     }
   }
@@ -163,7 +163,7 @@
     }
   }
 
-  action_sets.hacks['toggle puppetmaster'] = toggleCheats
+  action_sets.hacks.toggle_puppetmaster = toggleCheats
 
   // Enable spectator panel updates while open
   var previousPlayerControl = -1

@@ -28,10 +28,14 @@ function stringfy(object) {
 
 function loadHtml(src) {
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", src, false);
-    xmlhttp.send();
-    console.log('loadHtml');
-    console.log(xmlhttp.responseText);
+    try {
+        xmlhttp.open("GET", src, false);
+        xmlhttp.send();
+    }
+    catch (err) {
+        console.log("error loading " + src);
+        return;
+    }
 
     return xmlhttp.responseText;
 }
@@ -313,6 +317,42 @@ function cleanupLegacyStorage() {
         localStorage.setItem(key, encode(decode(localStorage[key])));
 }
 
+
+(function () { /* extend the coherent engine object with an async wrapper */
+    var async_requests = {};
+
+    engine.asyncCall = function (/* ... */) {
+        var request = new $.Deferred();
+        var args = Array.prototype.slice.call(arguments, 1);
+        args.unshift(arguments[0], api.Panel.pageId);
+        engine.call.apply(engine, args).then(
+            function (tag) {
+                async_requests[tag] = request;
+            }
+        );
+        return request.promise();
+    };
+
+    function async_result(data) {
+        var params = JSON.parse(data);
+        var tag = params.tag;
+        var success = !!params.success;
+        var code = params.code;
+        var result = params.result;
+        var request = async_requests[tag];
+        delete async_requests[tag];
+        if (request) {
+            if (success)
+                request.resolve(result, code);
+            else
+                request.reject(result, code);
+        }
+    }
+    engine.on("async_result", async_result);
+})();
+
+
+
 /* from: http://webdesignfan.com/htmlspecialchars-in-javascript/ */
 // Create the function.
 // First parameter: the string
@@ -376,90 +416,90 @@ var htmlSpecialChars = function (string, reverse) {
     return string;
 };
 
-ko.extenders.local = function (target, option) {
-    var v;
-    var loading = false;
+var onUbernetLogin;
 
-    // write changes to storage
-    target.subscribe(function (newValue) {
-        if (!loading)
-            localStorage.setItem(option, encode(newValue));
-    });
+(function () {
+    var refresh_on_login = [];
+    var logged_in = false;
 
-    // init from storage
-    if (localStorage[option]) {
-        v = decode(localStorage[option]);
-        loading = true;
-        try { 
-            target(v); 
-        } catch (e) { 
-            loading = false; 
-            throw e; 
-        }
-        loading = false;
-    }
+    onUbernetLogin = function () {
+        _.invoke(refresh_on_login, 'refresh');
+        refresh_on_login.length = 0;
+        logged_in = true;
+    };
 
-    return target;
-};
+    ko.extenders.ubernet = function (target, option) {
+        var base_key = option,
+            ubernet_key = 'uberData.' + base_key,
+            previous = '';
 
-ko.extenders.session = function (target, option) {
+        var updateUbernetData = function (data) {
 
-    var v;
-    var loading = false;
+            if (_.isUndefined(data) || _.isNull(data))
+                return;
 
-    // write changes to storage
-    target.subscribe(function (newValue) {
-        if (!loading)
-            sessionStorage.setItem(option, encode(newValue));
-    });
+            var payload = {};
+            payload[ubernet_key] = data;
 
-    // init from storage
-    if (sessionStorage[option]) {
-        v = decode(sessionStorage[option]);
-        loading = true;
-        try {
-            target(v);
-        } catch (e) { 
-            loading = false;
-            throw e;
-        }
-        loading = false;
-    }
+            var payload_string = JSON.stringify(payload);
 
-    return target;
-};
+            if (payload_string !== previous)
+                engine.asyncCall("ubernet.updateUserCustomData", JSON.stringify(payload))
+                    .done(function (data) {
+                        previous = payload_string;
+                    })
+                    .fail(function (error) {
+                        console.log(error);
+                        console.log('failed to save ubernet data: ' + base_key);
+                    });
 
-ko.extenders.notify = function (target, option) {
-    // write changes to storage
-    target.subscribe(function (newValue) {
-        //console.log(option + ':' + newValue);
-    });
+            localStorage.setItem(base_key, encode(data)); /* fallback to localstorage */
+        };
 
-    return target;
-};
+        target.subscribe(function (value) {
+            updateUbernetData(value);
+        });
 
+        target.refresh = function () {
+            engine.asyncCall("ubernet.getUserCustomData", JSON.stringify([ubernet_key]))
+              .done(function (data) {
+                  var result;
+                  try {
+                      if (data)
+                          result = JSON.parse(data).Data[ubernet_key];
 
-ko.extenders.notifyWithMessage = function (target, option) {
+                      if (_.isUndefined(result) || _.isNull(result))  /* fallback to localstorage */
+                          result = decode(localStorage[base_key]);                        
+                      
+                      if (!_.isUndefined(result) && !_.isNull(result)) {
+                          updateUbernetData(result); /* replicate local data to PlayFab */
+                          target(result);
+                      }
 
-    target.subscribe(function (newValue) {
+                  } catch (error) {
+                      console.log(error);
+                      console.log('malformed ubernet data: ' + base_key);
+                  }
+              })
+              .fail(function (error) {
+                  console.log(error);
+                  console.log('failed to load ubernet data: ' + base_key);
+                  var result = decode(localStorage[base_key]);
+                  if (!_.isUndefined(result) && !_.isNull(result)) {
+                      updateUbernetData(result);  /* replicate local data to PlayFab */
+                      target(result);
+                  }
+              });
+        };
 
-        if (messageLog[option] === newValue)
-            return;
+        if (!logged_in)
+            refresh_on_login.push(target);
+        else
+            target.refresh();    
 
-        messageLog[option] = newValue;
-
-        var m = {};
-        //console.log("target " + target() + " newvalue " + newValue);
-        m.payload = newValue;
-
-        m.message_type = option;
-
-        //console.log(m);
-        engine.call("conn_send_message", JSON.stringify(m));
-    });
-
-    return target;
-};
+        return target;
+    };
+})();
 
 (function () {
     // add useful binding handlers to knockout
@@ -597,20 +637,6 @@ ko.extenders.notifyWithMessage = function (target, option) {
         }
     }
 
-    ko.extenders.withPrevious = function (target) {
-        // Define new properties for previous value and whether it's changed
-        target.previous = ko.observable();
-        target.changed = ko.computed(function () { return target() !== target.previous(); });
-
-        // Subscribe to observable to update previous, before change.
-        target.subscribe(function (v) {
-            target.previous(v);
-        }, null, 'beforeChange');
-
-        // Return modified observable
-        return target;
-    }
-
     ko.bindingHandlers.selectPicker = {
         init: function (element, valueAccessor, allBindingsAccessor) {
             if ($(element).is('select')) {
@@ -624,7 +650,14 @@ ko.extenders.notifyWithMessage = function (target, option) {
 
                 var updateValue = function (value) {
                     $(element).selectpicker('val', value);
+                    if (ko.isObservable(valueAccessor()))
+                        ko.bindingHandlers.value.update(element, valueAccessor, allBindingsAccessor);
+                    $(element).selectpicker('refresh');
                 };
+
+                var updateOptions = function (options) {
+                    $(element).selectpicker('refresh');
+                }
 
                 if (ko.isObservable(valueAccessor())) {
                     updateValue(valueAccessor()());
@@ -640,41 +673,24 @@ ko.extenders.notifyWithMessage = function (target, option) {
                 var addSubscription = function (bindingKey) {
                     var targetObs = allBindingsAccessor.get(bindingKey);
 
-                    if (targetObs && ko.isObservable(targetObs))
-                        subscriptions.push(targetObs.subscribe(function () {
-                            updateValue(targetObs());
-                            $(element).selectpicker('refresh');
-                        }));
+                    var fn = null;
+                    if (bindingKey === 'value')
+                        fn = function () { updateValue(targetObs()) };
+                    if (bindingKey === 'options')
+                        fn = function () { updateOptions(targetObs()); };
+
+                    if (targetObs && ko.isObservable(targetObs) && fn) {
+                        subscriptions.push(targetObs.subscribe(fn));
+                    };
                 };
 
-                _.map(['options', 'value', 'selectedOptions'], addSubscription);
+                _.map(['options', 'value'], addSubscription);
 
                 ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
                     while (subscriptions.length) 
                         subscriptions.pop().dispose();
                 });
             }
-/*	// I didn't port this behavior, since everything worked without it... 
-	// however I want to keep this code here as an example if we need it in the future
- 		update: function (element, valueAccessor, allBindingsAccessor) {
-            if ($(element).is('select')) {
-                var selectPickerOptions = allBindingsAccessor().selectPickerOptions;
-                if (typeof selectPickerOptions !== 'undefined' && selectPickerOptions !== null) {
-                    var options = selectPickerOptions.options,
-                        optionsText = selectPickerOptions.optionsText,
-                        optionsValue = selectPickerOptions.optionsValue,
-                        optionsCaption = selectPickerOptions.optionsCaption;
-                    if (ko.utils.unwrapObservable(options).length > 0) {
-                        ko.bindingHandlers.options.update(element, options, ko.observable({ optionsText: optionsText, optionsValue: optionsValue, optionsCaption: optionsCaption }));
-                    }
-                }
-                if (ko.isObservable(valueAccessor())) 
-                    ko.bindingHandlers.value.update(element, valueAccessor);
-                
-                $(element).selectpicker('refresh');
-            }
-        }
-*/
         }
     };
 
@@ -730,7 +746,6 @@ ko.extenders.notifyWithMessage = function (target, option) {
 
 
 app.registerWithCoherent = function (model, handlers) {
-
     var response_key = Math.floor(Math.random() * 65536);
     var responses = {};
     globalHandlers.response = function (msg) {
@@ -753,28 +768,11 @@ app.registerWithCoherent = function (model, handlers) {
     }
 
     globalHandlers.create_lobby = function () {
-
-        var useLocalServer = ko.observable().extend({ session: 'use_local_server' });
-        var joinLocalServer = ko.observable().extend({ session: 'join_local_server' });
-        var signedInToUbernet = ko.observable().extend({ session: 'signed_in_to_ubernet' });
-        var gameHostname = ko.observable().extend({ session: 'gameHostname' });
-        var gamePort = ko.observable().extend({ session: 'gamePort' });
-
-        if (useLocalServer()) {
-            joinLocalServer(true);
-            gameHostname('localhost');
-            gamePort(6543);
-            window.location.href = 'coui://ui/main/game/connect_to_game/connect_to_game.html';
-            return; /* window.location.href will not stop execution. */
-        }
-        
-        if (signedInToUbernet()) {
-            window.location.href = 'coui://ui/main/game/connect_to_game/connect_to_game.html?mode=start';
-            return; /* window.location.href will not stop execution. */
-        }
-
-        console.error('create lobby failed.  use a local server or login to ubernet.');
-    }
+        var lastSceneUrl = ko.observable().extend({ session: 'last_scene_url' });
+        lastSceneUrl('coui://ui/main/game/start/start.html');
+        var local = useLocalServer() ? '&local=true' : '';
+        window.location.href = 'coui://ui/main/game/connect_to_game/connect_to_game.html?action=start' + local;
+    };
 
     globalHandlers.join_lobby = function (payload) {
         
@@ -793,52 +791,32 @@ app.registerWithCoherent = function (model, handlers) {
 
         inivite_uuid(payload.uuid);
 
-        if (payload.local_game) {
-            joinLocalServer(true);
-            gameHostname(payload.game_hostname)
-            gamePort(payload.game_port || 6543);
-            window.location.href = 'coui://ui/main/game/connect_to_game/connect_to_game.html';
-            return; /* window.location.href will not stop execution. */
-        }
-
-        // Connect to game via Ubernet
+        // Connect to game
         lobbyId(payload.lobby_id);
 
-        function transit(message) {
-            engine.call('disable_lan_lookout');
-            transitPrimaryMessage(message);
-            transitSecondaryMessage('Returning to Main Menu');
-            transitDestination('coui://ui/main/game/start/start.html');
-            transitDelay(5000);
-            window.location.href = 'coui://ui/main/game/transit/transit.html';
-            return; /* window.location.href will not stop execution. */
-        }
-
-        engine.asyncCall("ubernet.joinGame", payload.lobby_id)
+        api.net.joinGame({ 
+            lobbyId: payload.lobby_id,
+            host: payload.game_hostname,
+            port: payload.game_port || 6543
+        })
+            .always(function() {
+                engine.call('disable_lan_lookout');
+            })
             .done(function (data) {
-                console.log('ubernet.joinGame: ok');
-                // Get the data from Ubernet about the game
-                data = JSON.parse(data);
-                console.log(data);
+                joinLocalServer(payload.local_game);
+                gameTicket(data.Ticket);
+                gameHostname(data.ServerHostname);
+                gamePort(data.ServerPort);
 
-                if (data.Ticket && data.ServerHostname && data.ServerPort) {
-                    gameTicket(data.Ticket);
-                    gameHostname(data.ServerHostname);
-                    gamePort(data.ServerPort);
-
-                    // Connect
-                    engine.call('disable_lan_lookout');
-                    window.location.href = 'coui://ui/main/game/connect_to_game/connect_to_game.html';
-                    return; /* window.location.href will not stop execution. */
-                }
-                else {
-                    console.log('ubernet.joinGame did not return a game ticket.');
-                    transit('FAILED TO JOIN GAME');
-                }               
+                // Connect
+                window.location.href = 'coui://ui/main/game/connect_to_game/connect_to_game.html';
             })
             .fail(function (data) {
-                console.log('ubernet.joinGame: failed');
-                transit('FAILED TO FIND GAME');
+                transitPrimaryMessage('FAILED TO FIND GAME');
+                transitSecondaryMessage('Returning to Main Menu');
+                transitDestination('coui://ui/main/game/start/start.html');
+                transitDelay(5000);
+                window.location.href = 'coui://ui/main/game/transit/transit.html';
             });
     }
 
@@ -874,36 +852,6 @@ app.registerWithCoherent = function (model, handlers) {
         read_message(string, {});
     }
     engine.on("process_signal", process_signal);
-
-
-
-    var async_requests = {};
-
-    engine.asyncCall = function (/* ... */) {
-        var request = new $.Deferred();
-        engine.call.apply(engine, arguments).then(
-            function (tag) {
-                async_requests[tag] = request;
-            }
-        );
-        return request.promise();
-    };
-
-    function async_result(tag, success /* , ... */) {
-        var request, args;
-
-        request = async_requests[tag];
-        delete async_requests[tag];
-        if (request) {
-            args = Array.slice(arguments, 2, arguments.length);
-            if (success) 
-                request.resolve.apply(request, args);
-            else 
-                request.reject.apply(request, args);
-        }
-    }
-    engine.on("async_result", async_result);
-
 
     model.send_message = function (message, payload, respond) {
 
@@ -982,12 +930,27 @@ $(document).ready(function () {
   var stub = function() {}
   stub.stub = true
 
-  action_sets.hacks['toggle puppetmaster'] = stub
-  default_keybinds.hacks['toggle puppetmaster'] = 'alt+ctrl+shift+p'
+  action_sets.hacks.toggle_puppetmaster = stub
+  api.settings.definitions.keyboard.settings.toggle_puppetmaster = {
+    title: 'toggle puppetmaster',
+    type: 'keybind',
+    set: 'dev mode',
+    display_group: 'dev mode',
+    display_sub_group: 'puppetmaster',
+    default: 'alt+ctrl+shift+p'
+  }
 
-  action_sets.hacks['bulk paste unit'] = 
-    action_sets.hacks['bulk paste unit'] || stub
-  default_keybinds.hacks['bulk paste unit'] = 'shift+ctrl+v'
+  action_sets.hacks.bulk_paste_unit = 
+    action_sets.hacks.bulk_paste_unit || stub
+  api.settings.definitions.keyboard.settings.bulk_paste_unit =
+    api.settings.definitions.keyboard.settings.bulk_paste_unit || {
+      title: 'bulk paste unit',
+      type: 'keybind',
+      set: 'dev mode',
+      display_group: 'dev mode',
+      display_sub_group: 'puppetmaster',
+      default: 'shift+ctrl+v'
+    }
 })()
 
 if (window.location.href != 'coui://ui/main/game/live_game/live_game.html') {

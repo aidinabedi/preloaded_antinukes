@@ -12,12 +12,27 @@
   var stub = function() {}
   stub.stub = true
 
-  action_sets.hacks['toggle puppetmaster'] = stub
-  default_keybinds.hacks['toggle puppetmaster'] = 'alt+ctrl+shift+p'
+  action_sets.hacks.toggle_puppetmaster = stub
+  api.settings.definitions.keyboard.settings.toggle_puppetmaster = {
+    title: 'toggle puppetmaster',
+    type: 'keybind',
+    set: 'dev mode',
+    display_group: 'dev mode',
+    display_sub_group: 'puppetmaster',
+    default: 'alt+ctrl+shift+p'
+  }
 
-  action_sets.hacks['bulk paste unit'] = 
-    action_sets.hacks['bulk paste unit'] || stub
-  default_keybinds.hacks['bulk paste unit'] = 'shift+ctrl+v'
+  action_sets.hacks.bulk_paste_unit = 
+    action_sets.hacks.bulk_paste_unit || stub
+  api.settings.definitions.keyboard.settings.bulk_paste_unit =
+    api.settings.definitions.keyboard.settings.bulk_paste_unit || {
+      title: 'bulk paste unit',
+      type: 'keybind',
+      set: 'dev mode',
+      display_group: 'dev mode',
+      display_sub_group: 'puppetmaster',
+      default: 'shift+ctrl+v'
+    }
 })()
 
 if (window.location.href != 'coui://ui/main/game/live_game/live_game.html') {
