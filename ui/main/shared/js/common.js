@@ -135,8 +135,12 @@ function uuid() {
 //       should only show up if you've marked string for loc (good!) but haven't run the loc update script to generate ids (do it!)
 //   loc(any_other_string) -> any_other_string
 //       any string without a loc tag is a passthrough, so loc(loc(loc(text))) should equal loc(text)
+//   loc(any_non_string) -> any_non_string
+//       any non string is a passthrough. this is usefully for many cases where a ko observable needs loc but may be undefined at some point.
 function loc(inText, inOptionalArgs) {
     var locTag = "!LOC"; // !LOCSKIP
+    if (!_.isString(inText))
+        return inText;
     if (inText.substring(0, locTag.length) === locTag) {
         if (inText.charAt(locTag.length) === '(') {
             var remainingText = inText.substring(locTag.length + 1);
@@ -643,6 +647,13 @@ var onUbernetLogin;
 
                 if (ko.isObservable(valueAccessor())) 
                     ko.bindingHandlers.value.init(element, valueAccessor, allBindingsAccessor);
+
+                //replace text with localized text.
+                $.each(element, function () {
+                    if ($(this).attr('locdata')) {
+                        $(this).text(loc($(this).attr('locdata')));
+                    }
+                });
 
                 $(element)
                     .addClass('selectpicker')

@@ -1,3 +1,7 @@
+## 1.1.1
+
+- Updated shadowed common.js to match 72332
+
 ## 1.1.0
 
 - Major updates to stock common.js
