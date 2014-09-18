@@ -29,7 +29,7 @@
 
   handlers.puppetmasterUnitSelected = function(spec) {
     var unit = model.unitSpecs[spec]
-    selectedUnit = {spec: spec, name: (unit && unit.name) || 'unknown'}
+    selectedUnit = {spec: spec, name: (unit && loc(unit.name)) || 'unknown'}
   }
 
   var liveGameHover = handlers.hover
@@ -37,7 +37,7 @@
     liveGameHover(payload)
 
     if (payload) {
-      lastHover = {spec: payload.spec_id || '', name: payload.name || 'unknown'}
+      lastHover = {spec: payload.spec_id || '', name: loc(payload.name) || 'unknown'}
     }
   }
 
@@ -99,7 +99,7 @@
     } else if (method == 'unit.debug.setSpecId') {
       var spec = arguments[1]
       var unit = model.unitSpecs[spec]
-      selectedUnit = {spec: spec, name: (unit && unit.name) || 'unknown'}
+      selectedUnit = {spec: spec, name: (unit && loc(unit.name)) || 'unknown'}
     }
 
     return engineCall.apply(this, arguments);

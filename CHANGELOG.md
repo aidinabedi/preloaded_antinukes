@@ -1,6 +1,7 @@
-## 1.1.1
+## 1.2.0
 
 - Updated shadowed common.js to match 72332
+- Support localization of unit names
 
 ## 1.1.0
 
