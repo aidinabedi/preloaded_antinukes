@@ -16,8 +16,8 @@
   api.settings.definitions.keyboard.settings.toggle_puppetmaster = {
     title: 'toggle puppetmaster',
     type: 'keybind',
-    set: 'dev mode',
-    display_group: 'dev mode',
+    set: 'mods',
+    display_group: 'mods',
     display_sub_group: 'puppetmaster',
     default: 'alt+ctrl+shift+p'
   }
@@ -28,8 +28,8 @@
     api.settings.definitions.keyboard.settings.bulk_paste_unit || {
       title: 'bulk paste unit',
       type: 'keybind',
-      set: 'dev mode',
-      display_group: 'dev mode',
+      set: 'mods',
+      display_group: 'mods',
       display_sub_group: 'puppetmaster',
       default: 'shift+ctrl+v'
     }

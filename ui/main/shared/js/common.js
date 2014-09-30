@@ -126,6 +126,75 @@ function uuid() {
     return result
 }
 
+// Parses the '--uioptions' string from the command line.  Note: Uses JS syntax
+// instead of JSON parsing due to probable interactions with command line 
+// parsing.  (And for extra flexibility.)  Invalid JS will turn into a plain 
+// string.  Un-wrapped functions will be executed, recursively.  Non-string 
+// options will be assigned to the 'option' member of the result.
+// 
+// Examples:
+// - "" -> {}
+// - "Data" -> { Data: 'Data' }
+// - "'Data'" -> { Data: 'Data' }
+// - "['Data', 'Flag', 'Option']" -> { Data: 'Data', Flag: 'Flag', Option: 'Option' }
+// - "[{ Data : 42 }, { Flag : true }, { Option : [] }]" -> { Data: 42, Flag: true, Option: [] }
+// - "{ custom: {}, options: [] }" -> { custom: {}, options: [] }
+// - "{not,Valid:'JS'}" -> { 'not,Valid:\'JS\'': 'not,Valid:\'JS\'' }
+// - "42" -> { option: 42 }
+// - "true" -> { option: true }
+// - "function() { return 42; }()" -> { option: 42 }
+// - "function() { return 42; }" -> { option: 42 }
+// - "function() { return function() { return 42; }; }" -> { option: 42 }
+// - "function() { return [{Data:42}, {Flag:true}, {Option:[]}]; }" -> { Data: 42, Flag: true, Option: [] }
+// - "[{ Data: 42 }, function() { return { Flag: true }; }, { Option: [] }]" -> { Data: 42, Flag: true, Option: [] }
+// - "[{ DataFn: function() { return 42; } }]" -> { DataFn: function() { return 42; } }
+function parseUIOptions(options) {
+    if (!_.isString(options)) {
+        if (!_.isObject(options))
+            return {};
+        return options;
+    }
+    
+    function unwrapFunction(fn, defaultValue) {
+        var unwrapResult = defaultValue;
+        while (_.isFunction(fn)) {
+            try {
+                unwrapResult = fn();
+                fn = unwrapResult;
+            }
+            catch (ex) {
+                break;
+            }
+        }
+        return unwrapResult;
+    }
+    
+    var result = { };
+    if (options !== '') {
+        try {
+            var fn = new Function('return ' + options);
+            var fnResult = unwrapFunction(fn, options);
+            if (!_.isArray(fnResult))
+                fnResult = [fnResult];
+            _.forEach(fnResult, function(item) {
+                item = unwrapFunction(item, item);
+                if (_.isObject(item))
+                    _.assign(result, item);
+                else if (_.isString(item))
+                    result[item] = item;
+                else
+                    result.option = item;
+            });
+        }
+        catch (ex) {
+            result = {};
+            result[options] = options;
+        }
+    }
+    
+    return result;
+}
+
 // loc() - primary localization function
 //   loc("!LOC(id):original text") -> i18n(id)              // !LOCSKIP this comment is so the loc update script knows to skip this line
 //       id found -> translated text (yay!)
@@ -945,8 +1014,8 @@ $(document).ready(function () {
   api.settings.definitions.keyboard.settings.toggle_puppetmaster = {
     title: 'toggle puppetmaster',
     type: 'keybind',
-    set: 'dev mode',
-    display_group: 'dev mode',
+    set: 'mods',
+    display_group: 'mods',
     display_sub_group: 'puppetmaster',
     default: 'alt+ctrl+shift+p'
   }
@@ -957,8 +1026,8 @@ $(document).ready(function () {
     api.settings.definitions.keyboard.settings.bulk_paste_unit || {
       title: 'bulk paste unit',
       type: 'keybind',
-      set: 'dev mode',
-      display_group: 'dev mode',
+      set: 'mods',
+      display_group: 'mods',
       display_sub_group: 'puppetmaster',
       default: 'shift+ctrl+v'
     }

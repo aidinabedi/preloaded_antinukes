@@ -1,3 +1,11 @@
+## 1.3.0
+
+- Update common.js to match 729966
+- Correct forum url to release topic
+- Keybinding group changed due to localization; move to 'Mods'
+- Update readme
+- Ensure pasteCount is an integer
+
 ## 1.2.0
 
 - Updated shadowed common.js to match 72332

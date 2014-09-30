@@ -1,6 +1,33 @@
 # Puppetmaster
 
-Allow spectators to create and control units.
+Enables create-unit and change-control for spectators, which can act as puppet-masters over the poor players. Intended as spectator donate-for-unit during the [Community AbleGamers Tournament](https://forums.uberent.com/threads/community-ablegamers-tournament.61966/), but I expect it will be usable for other random silliness.
+
+[Video Thread](https://forums.uberent.com/threads/puppetmaster-videos.62581/)
+
+Spectators may use the 'toggle puppetmaster' keybind, which is by default alt+ctrl+shift+p. The binding should be configurable if you visit Settings while in a modded game.
+
+From there, select a player and a unit in the extra panels, and then you can use the standard paste keybinding, ctrl+v, and an additional paste-10, shift+ctrl+v, which can be rebound from in-game settings.
+
+This will show as a Modded Game, as well as cheats enabled. Last I checked, nothing further was required to view cheat games.
+
+### Recommended client mods for puppetmaster:
+
+- [Sandbox Unit Organizer](https://forums.uberent.com/threads/rel-sandbox-unit-organizer.62310/)
+- [Bulk Create Units](https://forums.uberent.com/threads/rel-bulk-create-units.62492/)
+- [Improved Player Control](https://forums.uberent.com/threads/rel-improved-player-control.62472/)
+
+### ...For special events
+
+- [Sandbox Unit Menu](https://forums.uberent.com/threads/wip-sandbox-unit-menu-ablegamers.62461/)
+- [Donation Panel](https://forums.uberent.com/threads/wip-donation-panel.62576/)
+
+### Other Notes:
+
+- Since you have to change control to give a player units, the mod also allows the puppet-master to give unit orders, including self-destruct. (It's up to the puppet-master's discretion to allow donate-for-troll)
+- Nukes and anti-nukes are preloaded with one missile, and the metal cost is increased proportionally.
+- As discovered in the video, extra commanders don't change the losing conditions - only original coms count for assassination.
+- Controlling a player stops army stat updates; the mod clears control flags when the spectator panel opened, but it can be easy to forget you need to re-select a player in order to paste.
+
 
 ## Development
 

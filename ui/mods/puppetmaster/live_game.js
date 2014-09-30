@@ -64,7 +64,7 @@
   // Count tracking
   var pasteCount = ko.observable(0)
   pasteCount.subscribe(function(count) {
-    api.panels.devmode && api.panels.devmode.message('pasteCount', count);
+    api.panels.devmode && api.panels.devmode.message('pasteCount', parseInt(count, 10));
   })
   var pasteReset = null
   var resetCount = function() {
@@ -75,7 +75,7 @@
     pasteReset = null
   }
   var increment = function(n) {
-    pasteCount(pasteCount() + n)
+    pasteCount(pasteCount() + parseInt(n, 10))
     clearTimeout(pasteReset)
     pasteReset = setTimeout(resetCount, 2000)
   }
