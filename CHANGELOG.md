@@ -1,6 +1,6 @@
 ## 1.3.0
 
-- Update common.js to match 729966
+- Update common.js to match 72996
 - Correct forum url to release topic
 - Keybinding group changed due to localization; move to 'Mods'
 - Update readme
