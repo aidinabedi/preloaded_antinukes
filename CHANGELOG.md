@@ -1,3 +1,7 @@
+## 1.4.0
+
+- Units appear at end of drop pod effect
+
 ## 1.3.0
 
 - Update common.js to match 72996
