@@ -41,6 +41,30 @@
     }
   }
 
+  var locationEvents = function(alerts) {
+    alerts.forEach(function(alert) {
+      var paste = dropPodQueue.shift()
+      if (!paste) return
+      setTimeout(function() {
+        pasteUnits3D(paste.n, {
+          army: alert.army_id,
+          what: paste.spec,
+          planet: alert.planet_id,
+          location: alert.location
+        })
+      }, 4600)
+    })
+  }
+
+  var liveGameWatchList = handlers.watch_list
+  handlers.watch_list = function(payload) {
+    if (liveGameWatchList) liveGameWatchList(payload)
+
+    if (payload) {
+      locationEvents(payload.list.filter(dropPodEvent))
+    }
+  }
+
   var announceGift = function(who, count, what) {
     model.send_message("team_chat_message",
       {message: ['Puppetmaster gives', who, count.toString(), what].join(' ')});
@@ -55,10 +79,16 @@
     }
   })
 
+  var dropPodSpec = "/pa/puppetmaster/drop_pod_launcher.json"
+
   var dropPod = function() {
-    engineCall("unit.debug.setSpecId", "/pa/puppetmaster/drop_pod_launcher.json")
+    engineCall("unit.debug.setSpecId", dropPodSpec)
     engineCall("unit.debug.paste")
-    engineCall("unit.debug.setSpecId", selectedUnit.spec)
+  }
+
+  var dropPodEvent = function(alert) {
+    return (alert.watch_type == constants.watch_type.death &&
+      alert.spec_id == dropPodSpec)
   }
 
   // Count tracking
@@ -105,16 +135,24 @@
     return engineCall.apply(this, arguments);
   }
 
+  var dropPodQueue = []
   var pasteUnits = function(n) {
     if (!model.cheatAllowCreateUnit()) return
     if (n < 1) return
 
     dropPod()
-    for (var i = 0;i < n;i++) {
-      engineCall("unit.debug.paste")
-    }
+    dropPodQueue.push({n: n, spec: selectedUnit.spec})
     increment(n)
     maybePing()
+  }
+
+  var pasteUnits3D = function(n, config) {
+    if (!model.cheatAllowCreateUnit()) return
+    if (n < 1) return
+
+    for (var i = 0;i < n;i++) {
+      model.send_message('create_unit', config)
+    }
   }
 
   model.pasteBurst = 10
