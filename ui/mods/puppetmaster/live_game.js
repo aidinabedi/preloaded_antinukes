@@ -46,13 +46,13 @@
       var paste = dropPodQueue.shift()
       if (!paste) return
       setTimeout(function() {
-        pasteUnits3D(paste.n, {
+        pasteUnits3D(paste.count, {
           army: alert.army_id,
           what: paste.spec,
           planet: alert.planet_id,
           location: alert.location
         })
-      }, 4600)
+      }, paste.time - Date.now())
     })
   }
 
@@ -141,7 +141,11 @@
     if (n < 1) return
 
     dropPod()
-    dropPodQueue.push({n: n, spec: selectedUnit.spec})
+    dropPodQueue.push({
+      count: n,
+      spec: selectedUnit.spec,
+      time: Date.now() + 5000
+    })
     increment(n)
     maybePing()
   }
