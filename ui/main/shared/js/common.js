@@ -998,6 +998,8 @@ $(document).ready(function () {
 });
 (scene_mod_list['live_game'] = scene_mod_list['live_game'] || []).
   unshift('coui://ui/mods/puppetmaster/live_game.js');
+(scene_mod_list['live_game_unit_alert'] = scene_mod_list['live_game_unit_alert'] || []).
+  unshift('coui://ui/mods/puppetmaster/live_game_unit_alert.js');
 (scene_mod_list['live_game_devmode'] = scene_mod_list['live_game_devmode'] || []).
   unshift('coui://ui/mods/puppetmaster/live_game_devmode.js');
 (scene_mod_list['live_game_players'] = scene_mod_list['live_game_players'] || []).

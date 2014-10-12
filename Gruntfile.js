@@ -8,6 +8,7 @@ var media = require('./lib/path').media(stream)
 var build = 'ui/main/shared/js/build.js'
 var common = 'ui/main/shared/js/common.js'
 var live_game = 'ui/mods/puppetmaster/live_game.js'
+var live_game_unit_alert = 'ui/mods/puppetmaster/live_game_unit_alert.js'
 var live_game_devmode = 'ui/mods/puppetmaster/live_game_devmode.js'
 var live_game_players = 'ui/mods/puppetmaster/live_game_players.js'
 var live_game_sandbox = 'ui/mods/puppetmaster/live_game_sandbox.js'
@@ -29,6 +30,10 @@ module.exports = function(grunt) {
           {
             src: modPath + live_game,
             dest: live_game,
+          },
+          {
+            src: modPath + live_game_unit_alert,
+            dest: live_game_unit_alert,
           },
           {
             src: modPath + live_game_devmode,
