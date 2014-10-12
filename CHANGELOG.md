@@ -1,6 +1,7 @@
 ## 1.4.0
 
 - Units appear at end of drop pod effect
+- Drop pod mechanism changed from death effect to noop death weapon
 
 ## 1.3.0
 

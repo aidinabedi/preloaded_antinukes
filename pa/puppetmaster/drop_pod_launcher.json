@@ -3,14 +3,13 @@
   "area_build_separation": 1.0, 
   "area_build_type": "Sphere", 
   "build_metal_cost": 1, 
+  "death_weapon": {
+    "air_ammo_spec": "/pa/puppetmaster/drop_pod_ammo.json", 
+    "air_height_threshold": 100, 
+    "ground_ammo_spec": "/pa/puppetmaster/drop_pod_ammo.json" 
+  }, 
   "description": "Special effect", 
   "display_name": "Drop Pod", 
-  "events": {
-    "died": {
-      "audio_cue":"/SE/Movement/commander/Commander_game_start_landing",
-      "effect_spec": "/pa/puppetmaster/drop_pod.pfx"
-    }
-  }, 
   "max_health": 0, 
   "mesh_bounds": [
     4.0, 
