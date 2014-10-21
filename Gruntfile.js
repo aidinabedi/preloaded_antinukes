@@ -86,12 +86,30 @@ module.exports = function(grunt) {
       },
     },
     proc: {
-      health: {
-        filename_regexp: null,
-        process: function(spec) {
-          if (spec.max_health) {
-            spec.max_health *= 2
-          }
+      nuke: {
+        src: [
+          'pa/units/land/nuke_launcher/nuke_launcher.json',
+          'pa/units/land/nuke_launcher/nuke_launcher_ammo.json'
+        ],
+        cwd: media,
+        dest: 'pa/units/land/nuke_launcher/nuke_launcher.json',
+        process: function(spec, ammo) {
+          spec.factory.default_ammo = [ spec.factory.initial_build_spec ]
+          spec.build_metal_cost += ammo.build_metal_cost
+          return spec
+        }
+      },
+      antinuke: {
+        src: [
+          'pa/units/land/anti_nuke_launcher/anti_nuke_launcher.json',
+          'pa/units/land/anti_nuke_launcher/anti_nuke_launcher_ammo.json'
+        ],
+        cwd: media,
+        dest: 'pa/units/land/anti_nuke_launcher/anti_nuke_launcher.json',
+        process: function(spec, ammo) {
+          spec.factory.default_ammo = [ spec.factory.initial_build_spec ]
+          spec.build_metal_cost += ammo.build_metal_cost
+          return spec
         }
       }
     }
@@ -101,30 +119,14 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-jsonlint');
   grunt.loadNpmTasks('grunt-json-schema');
 
-  grunt.registerTask('copy:unitFiles', 'copy files into the mod from PA', function() {
-    var done = this.async()
-    prompt.get(['filename_regexp'], function(err,result) {
-      var specs = spec.specFiles(grunt, result.filename_regexp, media)
-      spec.copyUnitFiles(grunt, specs)
-      done()
-    })
-  })
-
-  var proc = function(filename_regexp, process) {
-    var specs = spec.specFiles(grunt, filename_regexp)
-    spec.copyUnitFiles(grunt, specs, process)
-  }
-
   grunt.registerMultiTask('proc', 'Process unit files', function() {
-    var process = this.data.process
-    if (this.data.filename_regexp) {
-      proc(this.data.filename_regexp, process)
+    if (this.data.targets) {
+      var specs = spec.copyPairs(grunt, this.data.targets, media)
+      spec.copyUnitFiles(grunt, specs, this.data.process)
     } else {
-      var done = this.async()
-      prompt.get(['filename_regexp'], function(err,result) {
-        proc(result.filename_regexp, process)
-        done()
-      })
+      var specs = this.filesSrc.map(function(s) {return grunt.file.readJSON(media + s)})
+      var out = this.data.process.apply(this, specs)
+      grunt.file.write(this.data.dest, JSON.stringify(out, null, 2))
     }
   })
 
@@ -135,7 +137,7 @@ module.exports = function(grunt) {
   })
 
   // Default task(s).
-  grunt.registerTask('default', ['copy:common', 'hackCommon', 'copy:mod']);
+  grunt.registerTask('default', ['proc', 'copy:common', 'hackCommon', 'copy:mod']);
 
 };
 

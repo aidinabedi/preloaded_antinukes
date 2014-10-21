@@ -2,6 +2,9 @@
 
 - Units appear at end of drop pod effect
 - Drop pod mechanism changed from death effect to noop death weapon
+- Avatar factory tweaks removed
+- Shadowed Nuke/Antinuke specs updated in line with 73939
+- Update common.js to 73939 (local server port)
 
 ## 1.3.0
 

@@ -877,7 +877,7 @@ app.registerWithCoherent = function (model, handlers) {
         api.net.joinGame({ 
             lobbyId: payload.lobby_id,
             host: payload.game_hostname,
-            port: payload.game_port || 6543
+            port: payload.game_port || 20545
         })
             .always(function() {
                 engine.call('disable_lan_lookout');
