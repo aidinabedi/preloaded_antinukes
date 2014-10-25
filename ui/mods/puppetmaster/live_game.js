@@ -56,14 +56,17 @@
     })
   }
 
-  var liveGameWatchList = handlers.watch_list
-  handlers.watch_list = function(payload) {
-    if (liveGameWatchList) liveGameWatchList(payload)
+  // alertsManager bugs out when a watch_list handler is previoiusly defined
+  setTimeout(function() {
+    var liveGameWatchList = handlers.watch_list
+    handlers.watch_list = function(payload) {
+      if (liveGameWatchList) liveGameWatchList(payload)
 
-    if (payload) {
-      locationEvents(payload.list.filter(dropPodEvent))
+      if (payload) {
+        locationEvents(payload.list.filter(dropPodEvent))
+      }
     }
-  }
+  }, 0)
 
   var announceGift = function(who, count, what) {
     model.send_message("team_chat_message",

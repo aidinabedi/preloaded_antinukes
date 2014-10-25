@@ -1,3 +1,7 @@
+## 1.4.1
+
+- Fix a conflict with alertsManager (in PAStats, among others)
+
 ## 1.4.0
 
 - Units appear at end of drop pod effect
