@@ -99,15 +99,22 @@
   pasteCount.subscribe(function(count) {
     api.panels.devmode && api.panels.devmode.message('pasteCount', parseInt(count, 10));
   })
+  var pasteUnit = {spec: '', name: ''}
   var pasteReset = null
   var resetCount = function() {
-    announceGift(selectedPlayer(), pasteCount(), selectedUnit.name)
+    if (pasteCount() > 0) {
+      announceGift(selectedPlayer(), pasteCount(), pasteUnit.name)
+    }
 
     pasteCount(0)
     clearTimeout(pasteReset)
     pasteReset = null
   }
   var increment = function(n) {
+    if (selectedUnit.spec != pasteUnit.spec) {
+      resetCount()
+    }
+    pasteUnit = selectedUnit
     pasteCount(pasteCount() + parseInt(n, 10))
     clearTimeout(pasteReset)
     pasteReset = setTimeout(resetCount, 2000)

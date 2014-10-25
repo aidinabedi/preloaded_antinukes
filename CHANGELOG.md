@@ -1,6 +1,7 @@
 ## 1.4.1
 
 - Fix a conflict with alertsManager (in PAStats, among others)
+- Fix incorrect announcements when rapidly switching units (mostly the radar/energy combo from the tournment)
 
 ## 1.4.0
 
