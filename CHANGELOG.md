@@ -1,3 +1,7 @@
+## 1.4.2
+
+- Always define a handler on the main execution so events are sent to the scene
+
 ## 1.4.1
 
 - Fix a conflict with alertsManager (in PAStats, among others)

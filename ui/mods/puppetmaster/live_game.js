@@ -56,7 +56,11 @@
     })
   }
 
-  // alertsManager bugs out when a watch_list handler is previoiusly defined
+  if (!handlers.watch_list) {
+    // make sure alerts are enabled for this scene
+    handlers.watch_list = function(payload) {}
+  }
+  // alertsManger isn't passing through our events, so we have to go upstream
   setTimeout(function() {
     var liveGameWatchList = handlers.watch_list
     handlers.watch_list = function(payload) {
