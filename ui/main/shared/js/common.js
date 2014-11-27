@@ -5,6 +5,11 @@ var scene_mod_list = [];
 var messageLog = {};
 var app = {};
 
+var constants = {
+    PLANET_CSG_DATABASE: 'planet_csg',
+    PLANET_METAL_SPOTS_DATABASE: 'planet_metal_spots'
+}
+
 function parse(string) {
     var result = '';
 
@@ -118,20 +123,12 @@ function embedHtmlWithScript(srcHtml, srcSelector, target, cb) {
     });
 }
 
-function uuid() {
-    var result = '';
-    _.times(32, function () {
-        result += Math.floor(Math.random() * 16).toString(16).toUpperCase();
-    });       
-    return result
-}
-
 // Parses the '--uioptions' string from the command line.  Note: Uses JS syntax
-// instead of JSON parsing due to probable interactions with command line 
-// parsing.  (And for extra flexibility.)  Invalid JS will turn into a plain 
-// string.  Un-wrapped functions will be executed, recursively.  Non-string 
+// instead of JSON parsing due to probable interactions with command line
+// parsing.  (And for extra flexibility.)  Invalid JS will turn into a plain
+// string.  Un-wrapped functions will be executed, recursively.  Non-string
 // options will be assigned to the 'option' member of the result.
-// 
+//
 // Examples:
 // - "" -> {}
 // - "Data" -> { Data: 'Data' }
@@ -154,7 +151,7 @@ function parseUIOptions(options) {
             return {};
         return options;
     }
-    
+
     function unwrapFunction(fn, defaultValue) {
         var unwrapResult = defaultValue;
         while (_.isFunction(fn)) {
@@ -168,7 +165,7 @@ function parseUIOptions(options) {
         }
         return unwrapResult;
     }
-    
+
     var result = { };
     if (options !== '') {
         try {
@@ -191,7 +188,7 @@ function parseUIOptions(options) {
             result[options] = options;
         }
     }
-    
+
     return result;
 }
 
@@ -252,7 +249,7 @@ function locInitInternal(localeString) {
     locNamespace = locNamespace.substr(locNamespace.lastIndexOf('/') + 1);
     $.i18n.init({
         lng: localeString,
-        lowerCaseLng: true,
+        lowerCaseLng: false,
         resGetPath: '/main/_i18n/locales/__lng__/__ns__.json',
         ns: { namespaces: [locNamespace
             , 'shared'
@@ -542,8 +539,8 @@ var onUbernetLogin;
                           result = JSON.parse(data).Data[ubernet_key];
 
                       if (_.isUndefined(result) || _.isNull(result))  /* fallback to localstorage */
-                          result = decode(localStorage[base_key]);                        
-                      
+                          result = decode(localStorage[base_key]);
+
                       if (!_.isUndefined(result) && !_.isNull(result)) {
                           updateUbernetData(result); /* replicate local data to PlayFab */
                           target(result);
@@ -568,7 +565,7 @@ var onUbernetLogin;
         if (!logged_in)
             refresh_on_login.push(target);
         else
-            target.refresh();    
+            target.refresh();
 
         return target;
     };
@@ -579,22 +576,22 @@ var onUbernetLogin;
 
     ko.bindingHandlers.resize = {
         init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-            valueAccessor()(); // invoke the bound fn once on init 
+            valueAccessor()(); // invoke the bound fn once on init
             UberUtility.addResizeListener(element, valueAccessor()); // invoke the bound fn on each resize
         }
     };
 
     ko.bindingHandlers.overflow = {
         init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-            valueAccessor()(); // invoke the bound fn once on init 
-            UberUtility.addFlowListener(element, 'over', valueAccessor()); // invoke the bound fn overflow, 
+            valueAccessor()(); // invoke the bound fn once on init
+            UberUtility.addFlowListener(element, 'over', valueAccessor()); // invoke the bound fn overflow,
         }
     };
 
     ko.bindingHandlers.underflow = {
         init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-            valueAccessor()(); // invoke the bound fn once on init 
-            UberUtility.addFlowListener(element, 'under', valueAccessor()); // invoke the bound fn underflow, 
+            valueAccessor()(); // invoke the bound fn once on init
+            UberUtility.addFlowListener(element, 'under', valueAccessor()); // invoke the bound fn underflow,
         }
     };
 
@@ -608,8 +605,8 @@ var onUbernetLogin;
                 if (!element || !element.parentNode)
                     return;
 
-                /* only auto scroll if the bar is near the bottom. 
-                here 'near' means with 2 times the average item height. 
+                /* only auto scroll if the bar is near the bottom.
+                here 'near' means with 2 times the average item height.
                 a possible improvement would be to scroll as long as the last
                 non-zero height element is still visible. */
 
@@ -625,10 +622,10 @@ var onUbernetLogin;
     ko.bindingHandlers.observeAttributes = {
 
         init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-            valueAccessor()(); // invoke the bound fn once on init 
+            valueAccessor()(); // invoke the bound fn once on init
 
             var observer = new WebKitMutationObserver(function (mutations) {
-                valueAccessor()(); // invoke the bound fn wheneve a property of the element *is written to* 
+                valueAccessor()(); // invoke the bound fn wheneve a property of the element *is written to*
                 // if you overwrite an existing value with the same value this will still trigger
             });
 
@@ -639,10 +636,10 @@ var onUbernetLogin;
     ko.bindingHandlers.observeLocalAttributes = {
 
         init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-            valueAccessor()(); // invoke the bound fn once on init 
+            valueAccessor()(); // invoke the bound fn once on init
 
             var observer = new WebKitMutationObserver(function (mutations) {
-                valueAccessor()(); // invoke the bound fn whenever a property of the element *is written to* 
+                valueAccessor()(); // invoke the bound fn whenever a property of the element *is written to*
                 // if you overwrite an existing value with the same value this will still trigger
             });
 
@@ -714,7 +711,7 @@ var onUbernetLogin;
         init: function (element, valueAccessor, allBindingsAccessor) {
             if ($(element).is('select')) {
 
-                if (ko.isObservable(valueAccessor())) 
+                if (ko.isObservable(valueAccessor()))
                     ko.bindingHandlers.value.init(element, valueAccessor, allBindingsAccessor);
 
                 //replace text with localized text.
@@ -735,7 +732,7 @@ var onUbernetLogin;
                     $(element).selectpicker('refresh');
                 };
 
-                var updateOptions = function (options) {
+                var refeshPicker = function () {
                     $(element).selectpicker('refresh');
                 }
 
@@ -756,18 +753,17 @@ var onUbernetLogin;
                     var fn = null;
                     if (bindingKey === 'value')
                         fn = function () { updateValue(targetObs()) };
-                    if (bindingKey === 'options')
-                        fn = function () { updateOptions(targetObs()); };
+                    else
+                        fn = function () { refeshPicker(); };
 
-                    if (targetObs && ko.isObservable(targetObs) && fn) {
+                    if (targetObs && ko.isObservable(targetObs))
                         subscriptions.push(targetObs.subscribe(fn));
-                    };
                 };
 
-                _.map(['options', 'value'], addSubscription);
+                _.map(['options', 'value', 'enable', 'disable'], addSubscription);
 
                 ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
-                    while (subscriptions.length) 
+                    while (subscriptions.length)
                         subscriptions.pop().dispose();
                 });
             }
@@ -784,7 +780,7 @@ var onUbernetLogin;
                 var options = { min: 0, max: 100, step: 1 };
                 _.assign(options, valueAccessor().options());
                 options.value = accessor();
-                
+
                 $(element).slider(options).on('slide', function (ev) {
                     $(this).trigger("change");
                     accessor(ev.value);
@@ -797,8 +793,14 @@ var onUbernetLogin;
     //the postionion of the tool tip. (e.g. data-placement="left")
     ko.bindingHandlers.tooltip = {
         init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-  
+
             var update = function (value) {
+                //run run loc on tool tip
+                if (_.isArray(value))
+                    value = _.reduce(value, function (sum, val) { return sum + loc(val); }, '');
+                else
+                    value = loc(value);
+
                 $(element).tooltip({
                     title: value,
                     html: true,
@@ -855,7 +857,7 @@ app.registerWithCoherent = function (model, handlers) {
     };
 
     globalHandlers.join_lobby = function (payload) {
-        
+
         /* Since this is a global handler we can't make any assumptions about the model.
            This sets up the persistance channels that would normally belong in the model. */
         var gameTicket = ko.observable().extend({ session: 'gameTicket' });
@@ -874,7 +876,7 @@ app.registerWithCoherent = function (model, handlers) {
         // Connect to game
         lobbyId(payload.lobby_id);
 
-        api.net.joinGame({ 
+        api.net.joinGame({
             lobbyId: payload.lobby_id,
             host: payload.game_hostname,
             port: payload.game_port || 20545
@@ -901,7 +903,7 @@ app.registerWithCoherent = function (model, handlers) {
     }
 
     function read_message(message, payload) {
-        if (handlers[message]) 
+        if (handlers[message])
             handlers[message](payload);
         else if (globalHandlers[message])
             globalHandlers[message](payload);
@@ -976,7 +978,7 @@ app.registerWithCoherent = function (model, handlers) {
 app.loadTemplate = function(baseFileName) {
     var $scriptNode = $('script').last();
     var scriptNode = $scriptNode.get(0);
-    
+
     var $css = $('<link href="' + baseFileName + '.css" rel="stylesheet" type="text/css" />');
     $css.insertBefore($scriptNode);
     scriptNode.type = 'text/html';
@@ -988,7 +990,7 @@ $(document).ready(function () {
     // disable middle mouse scrolling
     $('body').mousedown(function (e) { if (e.button === 1) return false; });
 
-    if (api.Panel.pageName === 'game') 
+    if (api.Panel.pageName === 'game')
         modify_keybinds({ add: ['general', 'debugging'] });
 
     locUpdateDocument();

@@ -1,3 +1,7 @@
+## 1.4.3
+
+- Update common.js to 75539
+
 ## 1.4.2
 
 - Always define a handler on the main execution so events are sent to the scene
