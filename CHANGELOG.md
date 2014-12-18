@@ -1,3 +1,7 @@
+## 1.4.4
+
+- Update common.js to 76456
+
 ## 1.4.3
 
 - Update common.js to 75539

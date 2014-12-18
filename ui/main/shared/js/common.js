@@ -7,7 +7,8 @@ var app = {};
 
 var constants = {
     PLANET_CSG_DATABASE: 'planet_csg',
-    PLANET_METAL_SPOTS_DATABASE: 'planet_metal_spots'
+    PLANET_METAL_SPOTS_DATABASE: 'planet_metal_spots',
+    PLANET_LANDING_ZONES_DATABASE: 'planet_landing_zones'
 }
 
 function parse(string) {
@@ -938,7 +939,7 @@ app.registerWithCoherent = function (model, handlers) {
     model.send_message = function (message, payload, respond) {
 
         var m = {};
-        if (payload)
+        if (!_.isUndefined(payload))
             m.payload = payload;
 
         m.message_type = message;
