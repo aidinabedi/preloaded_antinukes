@@ -57,6 +57,7 @@ module.exports = function(grunt) {
               'LICENSE.txt',
               'README.md',
               'CHANGELOG.md',
+              'com.wondible.pa.puppetmaster/**',
               'ui/**',
               'pa/**',
               'server-script/**'],

@@ -1,3 +1,7 @@
+## 1.5.0
+
+- Support Server Mod Help Chat
+
 ## 1.4.4
 
 - Update common.js to 76456
