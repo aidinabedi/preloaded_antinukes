@@ -1,6 +1,7 @@
 ## 1.5.0
 
 - Support Server Mod Help Chat
+- Support Mod Help Player Guide
 
 ## 1.4.4
 
