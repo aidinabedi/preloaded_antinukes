@@ -1,3 +1,7 @@
+## 1.5.1
+
+- Update for underwater sight on launchers
+
 ## 1.5.0
 
 - Support Server Mod Help Chat
