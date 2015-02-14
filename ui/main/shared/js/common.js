@@ -1,7 +1,7 @@
 var globalHandlers = {};
 var model = {};
 var global_mod_list = [];
-var scene_mod_list = [];
+var scene_mod_list = {};
 var messageLog = {};
 var app = {};
 
@@ -69,6 +69,11 @@ function loadCSS(src) {
     link.type = "text/css";
     link.rel = "stylesheet";
     document.getElementsByTagName("head")[0].appendChild(link);
+}
+
+function loadSceneMods(scene) {
+    if (_.has(scene_mod_list, scene))
+        loadMods(scene_mod_list[scene]);
 }
 
 function loadMods(list) {
@@ -193,6 +198,8 @@ function parseUIOptions(options) {
     return result;
 }
 
+var debug_loc = false; // show the RUNLOCSCRIPT! in front of tags (when relevant)
+
 // loc() - primary localization function
 //   loc("!LOC(id):original text") -> i18n(id)              // !LOCSKIP this comment is so the loc update script knows to skip this line
 //       id found -> translated text (yay!)
@@ -221,7 +228,7 @@ function loc(inText, inOptionalArgs) {
                 return remainingText;
             }
         } else if (inText.charAt(locTag.length) === ':') {
-            return "RUNLOCSCRIPT! " + inText.substring(locTag.length + 1);
+            return debug_loc ? "RUNLOCSCRIPT! " : "" + inText.substring(locTag.length + 1);
         }
     }
     return inText;
@@ -598,23 +605,20 @@ var onUbernetLogin;
 
     ko.bindingHandlers.autoscroll = {
         init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-            /* autoscroll when the valueAccessor changes */
-            valueAccessor().subscribe(function (value) {
-                var threshold_scroll;
-                var current_scroll;
-
+            // right before the value changes, check if the parent of the element was scrolled to the bottom
+            var bottom = false;
+            valueAccessor().subscribe(function () {
                 if (!element || !element.parentNode)
                     return;
+                var p = element.parentNode;
+                bottom = p.scrollHeight - p.scrollTop === p.clientHeight;
+            }, null, "beforeChange");
 
-                /* only auto scroll if the bar is near the bottom.
-                here 'near' means with 2 times the average item height.
-                a possible improvement would be to scroll as long as the last
-                non-zero height element is still visible. */
-
-                threshold_scroll = 2 * element.parentNode.scrollHeight / element.parentNode.children.length;
-                current_scroll = element.parentNode.scrollHeight - element.parentNode.clientHeight - element.parentNode.scrollTop;
-
-                if (current_scroll < threshold_scroll)
+            // right after the value changed, if the parent of the element was scrolled to the bottom, scroll it to the bottom again
+            valueAccessor().subscribe(function (value) {
+                if (!element || !element.parentNode)
+                    return;
+                if (bottom)
                     element.scrollIntoView(true);
             });
         }

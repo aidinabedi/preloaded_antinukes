@@ -1,3 +1,7 @@
+## 1.5.2
+
+- Update common.js to 78071
+
 ## 1.5.1
 
 - Update for underwater sight on launchers
