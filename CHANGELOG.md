@@ -1,5 +1,7 @@
 ## 2.0.0
 
+- Remove obsolete cheat triggers
+- Attempt to block sandbox related UI elements
 
 ## 1.5.2
 
