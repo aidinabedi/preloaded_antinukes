@@ -2,6 +2,7 @@
 
 - Remove obsolete cheat triggers
 - Attempt to block sandbox related UI elements
+- Use PAMM for scene mod loading
 
 ## 1.5.2
 

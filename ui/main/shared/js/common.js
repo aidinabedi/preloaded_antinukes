@@ -1003,17 +1003,6 @@ $(document).ready(function () {
     // now that loc has been updated, it's okay to show the page
     $('html').fadeIn(0).show();
 });
-(scene_mod_list['live_game'] = scene_mod_list['live_game'] || []).
-  unshift('coui://ui/mods/puppetmaster/live_game.js');
-(scene_mod_list['live_game_unit_alert'] = scene_mod_list['live_game_unit_alert'] || []).
-  unshift('coui://ui/mods/puppetmaster/live_game_unit_alert.js');
-(scene_mod_list['live_game_devmode'] = scene_mod_list['live_game_devmode'] || []).
-  unshift('coui://ui/mods/puppetmaster/live_game_devmode.js');
-(scene_mod_list['live_game_players'] = scene_mod_list['live_game_players'] || []).
-  unshift('coui://ui/mods/puppetmaster/live_game_players.js');
-(scene_mod_list['live_game_sandbox'] = scene_mod_list['live_game_sandbox'] || []).
-  unshift('coui://ui/mods/puppetmaster/live_game_sandbox.js');
-
 (function() {
   // stub: for Bulk Paste Units compatibility
   var stub = function() {}

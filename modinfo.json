@@ -7,6 +7,23 @@
   "display_name": "Puppetmaster",
   "forum": "https://forums.uberent.com/threads/rel-server-puppetmaster.62534/",
   "identifier": "com.wondible.pa.puppetmaster",
+  "scenes": {
+    "live_game": [
+      "coui://ui/mods/puppetmaster/live_game.js"
+    ],
+    "live_game_unit_alert": [
+      "coui://ui/mods/puppetmaster/live_game_unit_alert.js"
+    ],
+    "live_game_devmode": [
+      "coui://ui/mods/puppetmaster/live_game_devmode.js"
+    ],
+    "live_game_players": [
+      "coui://ui/mods/puppetmaster/live_game_players.js"
+    ],
+    "live_game_sandbox": [
+      "coui://ui/mods/puppetmaster/live_game_sandbox.js"
+    ]
+  },
   "signature": "not yet implemented",
   "version": "2.0.0"
 }
