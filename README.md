@@ -2,13 +2,17 @@
 
 Enables create-unit and change-control for spectators, which can act as puppet-masters over the poor players. Intended as spectator donate-for-unit during the [Community AbleGamers Tournament](https://forums.uberent.com/threads/community-ablegamers-tournament.61966/), but I expect it will be usable for other random silliness.
 
+## Requirements
+
+Sandbox game option required.  Players will be prevented from using paste-unit, and the Devmode UI is turned off.
+
+PAMM is required in order to set up the server mod hooks.
+
 [Video Thread](https://forums.uberent.com/threads/puppetmaster-videos.62581/)
 
 Spectators may use the 'toggle puppetmaster' keybind, which is by default alt+ctrl+shift+p. The binding should be configurable if you visit Settings while in a modded game.
 
 From there, select a player and a unit in the extra panels, and then you can use the standard paste keybinding, ctrl+v, and an additional paste-10, shift+ctrl+v, which can be rebound from in-game settings.
-
-This will show as a Modded Game, as well as cheats enabled. Last I checked, nothing further was required to view cheat games.
 
 ### Recommended client mods for puppetmaster:
 
@@ -37,8 +41,7 @@ PA will upload **all files** in the mod directory, including `node_modules` and 
 
 ### Available Tasks
 
-- copy:common - copy the current common.js into the mod
-- hackCommon - append the mod hook to common.js
+- proc - modify nuke and antinuke units to preloaded versions
 - copy:mod - copy the mod files into server_mods
 - copy:back - copy puppetmaster.js back from the execution directory, to allow streamlined development
-- default: copy:common, hackCommon, copy:mod
+- default: proc, copy:mod

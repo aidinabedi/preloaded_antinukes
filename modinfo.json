@@ -8,6 +8,9 @@
   "forum": "https://forums.uberent.com/threads/rel-server-puppetmaster.62534/",
   "identifier": "com.wondible.pa.puppetmaster",
   "scenes": {
+    "global_mod_list": [
+      "coui://ui/mods/puppetmaster/global.js"
+    ],
     "live_game": [
       "coui://ui/mods/puppetmaster/live_game.js"
     ],
