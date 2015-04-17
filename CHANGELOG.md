@@ -1,6 +1,6 @@
 ## 2.0.0
 
-- Remove obsolete cheat triggers
+- Remove obsolete cheat triggers.  Sandbox option now required.
 - Attempt to block sandbox related UI elements
 - Use PAMM for scene mod loading
 - Remove common.js shadow
