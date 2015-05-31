@@ -1,6 +1,6 @@
 ## 2.0.1
 
-- Update help article for 82293; server mod loading seems broken
+- Update help article for 82293
 
 ## 2.0.0
 
