@@ -1,6 +1,28 @@
 (function() {
   console.log('puppetmaster')
 
+  api.Holodeck.prototype.raycastWithPlanet = function(x, y) {
+    var config = {
+      points: [[x, y]],
+      terrain: true,
+      units: false,
+      features: false
+    };
+    return engine.call('holodeck.raycast', this.id, JSON.stringify(config)).then(function(raw) {
+      var result = raw ? JSON.parse(raw) : null;
+      if (_.isObject(result)) {
+        var hitResults = result.results || [];
+        if (typeof(result.planet) != 'undefined') {
+          _.forEach(hitResults, function(hit) {
+            hit.planet = result.planet;
+          });
+        }
+        result = hitResults[0];
+      }
+      return result;
+    });
+  };
+
   // Ping / Ping throttling
   var mouseX = 0
   var mouseY = 0
@@ -67,7 +89,7 @@
       if (liveGameWatchList) liveGameWatchList(payload)
 
       if (payload) {
-        locationEvents(payload.list.filter(dropPodEvent))
+        //locationEvents(payload.list.filter(dropPodEvent))
       }
     }
   }, 0)
@@ -82,7 +104,7 @@
     if (index == -1) {
       return 'nobody'
     } else {
-      return model.players()[index].name
+      return model.players()[index]
     }
   })
 
@@ -107,7 +129,7 @@
   var pasteReset = null
   var resetCount = function() {
     if (pasteCount() > 0) {
-      announceGift(selectedPlayer(), pasteCount(), pasteUnit.name)
+      announceGift(selectedPlayer().name, pasteCount(), pasteUnit.name)
     }
 
     pasteCount(0)
@@ -153,12 +175,21 @@
   var pasteUnits = function(n) {
     if (!model.cheatAllowCreateUnit()) return
     if (n < 1) return
+    var army_id = selectedPlayer().id
+    if (typeof(army_id) == 'undefined') return
 
-    dropPod()
-    dropPodQueue.push({
-      count: n,
-      spec: selectedUnit.spec,
-      time: Date.now() + 5000
+    hdeck.raycastWithPlanet(mouseX, mouseY).then(function(result) {
+      var drop = {
+        army: army_id,
+        what: dropPodSpec,
+        planet: result.planet,
+        location: result.pos,
+      }
+      pasteUnits3D(1, drop)
+      drop.what = selectedUnit.spec
+      setTimeout(function() {
+        pasteUnits3D(n, drop)
+      }, 5000)
     })
     increment(n)
     maybePing()
