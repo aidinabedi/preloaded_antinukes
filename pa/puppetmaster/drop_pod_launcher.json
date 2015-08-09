@@ -33,7 +33,6 @@
   "spawn_layers": "WL_LandHorizontal", 
   "strategic_icon_priority": 3, 
   "unit_types": [
-      "UNITTYPE_Important",
       "UNITTYPE_Structure"
   ],
   "wreckage_health_frac": 0.0

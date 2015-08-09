@@ -1,3 +1,8 @@
+## 2.1.0
+
+- Use new raycast api to get location instead of drop pod death event
+- Looks there may have been a longstanding issue with drops on other planets
+
 ## 2.0.1
 
 - Update help article for 82293

@@ -1,8 +1,8 @@
 {
   "author": "wondible",
-  "build": "82369",
+  "build": "85423",
   "context": "server",
-  "date": "2015/05/31",
+  "date": "2015/08/09",
   "description": "Allow specators to create and control units.",
   "display_name": "Puppetmaster",
   "forum": "https://forums.uberent.com/threads/rel-server-puppetmaster.62534/",
@@ -13,9 +13,6 @@
     ],
     "live_game": [
       "coui://ui/mods/puppetmaster/live_game.js"
-    ],
-    "live_game_unit_alert": [
-      "coui://ui/mods/puppetmaster/live_game_unit_alert.js"
     ],
     "live_game_devmode": [
       "coui://ui/mods/puppetmaster/live_game_devmode.js"
@@ -28,5 +25,5 @@
     ]
   },
   "signature": "not yet implemented",
-  "version": "2.0.1"
+  "version": "2.1.0"
 }

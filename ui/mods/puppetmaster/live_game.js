@@ -63,37 +63,6 @@
     }
   }
 
-  var locationEvents = function(alerts) {
-    alerts.forEach(function(alert) {
-      var paste = dropPodQueue.shift()
-      if (!paste) return
-      setTimeout(function() {
-        pasteUnits3D(paste.count, {
-          army: alert.army_id,
-          what: paste.spec,
-          planet: alert.planet_id,
-          location: alert.location
-        })
-      }, paste.time - Date.now())
-    })
-  }
-
-  if (!handlers.watch_list) {
-    // make sure alerts are enabled for this scene
-    handlers.watch_list = function(payload) {}
-  }
-  // alertsManger isn't passing through our events, so we have to go upstream
-  setTimeout(function() {
-    var liveGameWatchList = handlers.watch_list
-    handlers.watch_list = function(payload) {
-      if (liveGameWatchList) liveGameWatchList(payload)
-
-      if (payload) {
-        //locationEvents(payload.list.filter(dropPodEvent))
-      }
-    }
-  }, 0)
-
   var announceGift = function(who, count, what) {
     model.send_message("team_chat_message",
       {message: ['Puppetmaster gives', who, count.toString(), what].join(' ')});
@@ -109,16 +78,6 @@
   })
 
   var dropPodSpec = "/pa/puppetmaster/drop_pod_launcher.json"
-
-  var dropPod = function() {
-    engineCall("unit.debug.setSpecId", dropPodSpec)
-    engineCall("unit.debug.paste")
-  }
-
-  var dropPodEvent = function(alert) {
-    return (alert.watch_type == constants.watch_type.death &&
-      alert.spec_id == dropPodSpec)
-  }
 
   // Count tracking
   var pasteCount = ko.observable(0)
@@ -171,7 +130,6 @@
     return engineCall.apply(this, arguments);
   }
 
-  var dropPodQueue = []
   var pasteUnits = function(n) {
     if (!model.cheatAllowCreateUnit()) return
     if (n < 1) return
