@@ -1,4 +1,6 @@
 (function() {
+  "use strict";
+
   console.log('puppetmaster')
 
   api.Holodeck.prototype.raycastWithPlanet = function(x, y) {
@@ -23,7 +25,7 @@
     });
   };
 
-  // Ping / Ping throttling
+  // Pointer tracking
   var mouseX = 0
   var mouseY = 0
   var hdeck = model.holodeck
@@ -33,16 +35,43 @@
     hdeck = $(this).data('holodeck')
   }
 
-  var lastPingTime = 0
-  var ping = function() {
-    lastPingTime = Date.now()
-    hdeck.unitCommand('ping', mouseX, mouseY, false)
+  // Ping
+  var commanderIds = []
+
+  var armyIndex = ko.computed(function() {
+    return model.playerControlFlags().indexOf(true)
+  })
+
+  model.playerControlFlags.subscribe(function(flags) {
+    if (armyIndex() != -1 && !commanderIds[armyIndex()]) {
+      setTimeout(api.select.commander, 500)
+    }
+  })
+
+  var liveGameSelection = handlers.selection
+  handlers.selection = function(payload) {
+    try {
+      if (armyIndex() != -1 && !commanderIds[armyIndex()]) {
+        var specs = payload.spec_ids
+        var keys = Object.keys(specs)
+        if (keys.length == 1) {
+          commanderIds[armyIndex()] = specs[keys[0]][0]
+          api.select.empty()
+          return
+        }
+      }
+    } catch(e) {
+      console.error(e.stack)
+    }
+    liveGameSelection(payload)
   }
 
-  var maybePing = function() {
-    if (Date.now() - lastPingTime > 500) {
-      setTimeout(ping, 0)
-    }
+  var ping = function(location) {
+    hdeck.view.sendOrder({
+      units: [commanderIds[armyIndex()]],
+      command: 'ping',
+      location: location,
+    })
   }
 
   // Spectator Announcement, including drop-pod effect
@@ -69,11 +98,10 @@
   }
 
   var selectedPlayer = ko.computed(function() {
-    var index = model.playerControlFlags().indexOf(true)
-    if (index == -1) {
-      return 'nobody'
+    if (armyIndex() == -1) {
+      return {name: 'nobody'}
     } else {
-      return model.players()[index]
+      return model.players()[armyIndex()]
     }
   })
 
@@ -133,8 +161,9 @@
   var pasteUnits = function(n) {
     if (!model.cheatAllowCreateUnit()) return
     if (n < 1) return
-    var army_id = selectedPlayer().id
-    if (typeof(army_id) == 'undefined') return
+    if (!selectedUnit.spec || selectedUnit.spec == '') return
+    if (armyIndex() == -1) return
+    var army_id = model.players()[armyIndex()].id
 
     hdeck.raycastWithPlanet(mouseX, mouseY).then(function(result) {
       var drop = {
@@ -145,17 +174,17 @@
       }
       pasteUnits3D(1, drop)
       drop.what = selectedUnit.spec
-      setTimeout(function() {
-        pasteUnits3D(n, drop)
-      }, 5000)
+      setTimeout(pasteUnits3D, 5000, n, drop)
+      setTimeout(ping, 4000, result)
     })
+
     increment(n)
-    maybePing()
   }
 
   var pasteUnits3D = function(n, config) {
     if (!model.cheatAllowCreateUnit()) return
     if (n < 1) return
+    if (!config.what || config.what == '') return
 
     for (var i = 0;i < n;i++) {
       model.send_message('create_unit', config)
@@ -195,6 +224,7 @@
     model.cheatAllowCreateUnit(true)
     model.sandbox(true)
     model.gameOptions.sandbox(true)
+    model.reviewMode(false)
     engine.call = puppetmaster
     $('body').on('mousemove', 'holodeck', mousetrack)
     setTimeout(function() {
@@ -232,6 +262,7 @@
         model.observerModeCalledOnce(false)
         model.startObserverMode()
       } else if (previousPlayerControl != -1) {
+        model.reviewMode(false)
         api.panels.devmode.message('puppetmasterRestoreControl', previousPlayerControl)
       }
     }

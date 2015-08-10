@@ -2,6 +2,7 @@
 
 - Use new raycast api to get location instead of drop pod death event
 - Looks there may have been a longstanding issue with drops on other planets
+- Ping is not as far ahead of unit appearance
 
 ## 2.0.1
 
