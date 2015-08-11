@@ -74,15 +74,40 @@
     })
   }
 
+  var land_mine = "/pa/units/land/land_mine/land_mine.papa"
+  var feature_burn = "/pa/effects/specs/feature_burn.pfx"
+
+  //api.getWorldView(0).clearPuppets()
+  api.getWorldView(0).getPuppets(true).then(function(puppets) {
+    var view = api.getWorldView(0)
+    puppets.forEach(function(puppet) {
+      if (puppet.model
+       && puppet.model.filename == land_mine
+       && puppet.location
+       && puppet.location.scale
+       && puppet.location.scale[0] > 4.199
+       && puppet.location.scale[0] < 4.2) {
+        removePuppet(view, puppet)
+      }
+    })
+  })
+
+  var removePuppet = function(view, puppet) {
+    puppet.fx_offsets = []
+    view.puppet(puppet).then(function() {
+      view.unPuppet(puppet.id)
+    })
+  }
+
   var flare = function(loc, time) {
     var puppet = {
-      "model": {
-        "filename": "/pa/units/land/land_mine/land_mine.papa", 
+      model: {
+        filename: land_mine,
       }, 
       location: {
         planet: loc.planet,
         pos: loc.pos,
-        scale: 4,
+        scale: 4.2,
       },
       material: {
         shader: "pa_unit_ghost",
@@ -94,22 +119,19 @@
           Diffuse: "/pa/effects/diffuse_texture.papa"
         }
       },
-      "fx_offsets": [
+      fx_offsets: [
         {
-          "bone": "bone_root", 
-          "filename": "/pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx", 
-          "offset": [ 0, 0, 0 ], 
-          "orientation": [ 0, 90, 0 ], 
+          bone: "bone_root",
+          filename: feature_burn,
+          offset: [ 0, 0, 0 ],
+          orientation: [ 0, 0, 0 ],
         }
-      ], 
+      ],
     }
     var view = hdeck.view
-    view.puppet(puppet).then(function(r) {
-      puppet = r
+    view.puppet(puppet, true).then(function(r) {
+      setTimeout(removePuppet, time, view, r)
     })
-    setTimeout(function() {
-      view.unPuppet(puppet.id)
-    }, time)
   }
 
   // Spectator Announcement, including drop-pod effect
@@ -195,8 +217,6 @@
 
     return engineCall.apply(this, arguments);
   }
-
-  //api.getWorldView(0).clearPuppets()
 
   var pasteUnits = function(n) {
     if (!model.cheatAllowCreateUnit()) return
