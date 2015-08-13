@@ -2,7 +2,7 @@
   "author": "wondible",
   "build": "85423",
   "context": "server",
-  "date": "2015/08/09",
+  "date": "2015/08/12",
   "description": "Allow specators to create and control units.",
   "display_name": "Puppetmaster",
   "forum": "https://forums.uberent.com/threads/rel-server-puppetmaster.62534/",
