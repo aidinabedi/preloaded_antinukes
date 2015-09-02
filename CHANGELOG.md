@@ -1,3 +1,7 @@
+## 2.1.1
+
+- Fix changed api name
+
 ## 2.1.0
 
 - Use new raycast api to get location instead of drop pod death event

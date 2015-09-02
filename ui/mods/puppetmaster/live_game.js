@@ -78,7 +78,7 @@
   var feature_burn = "/pa/effects/specs/feature_burn.pfx"
 
   //api.getWorldView(0).clearPuppets()
-  api.getWorldView(0).getPuppets(true).then(function(puppets) {
+  api.getWorldView(0).getAllPuppets(true).then(function(puppets) {
     var view = api.getWorldView(0)
     puppets.forEach(function(puppet) {
       if (puppet.model

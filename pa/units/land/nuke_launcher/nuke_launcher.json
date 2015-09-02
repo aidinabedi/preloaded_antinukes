@@ -1,7 +1,7 @@
 {
   "base_spec": "/pa/units/land/base_structure/base_structure.json",
-  "display_name": "!LOC(units:nuclear_missile_launcher.message):Nuclear Missile Launcher",
-  "description": "!LOC(units:nuclear_missile_launcher_equipped_with_advanced_long_range_large_area_damage_nuclear_missile.message):Nuclear missile launcher- Equipped with advanced long range, large area damage, nuclear missile.",
+  "display_name": "!LOC:Nuclear Missile Launcher",
+  "description": "!LOC:Nuclear missile launcher- Equipped with advanced long range, large area damage, nuclear missile.",
   "max_health": 1500,
   "build_metal_cost": 64400,
   "atrophy_rate": 240,
@@ -222,10 +222,17 @@
       "intensity": 5
     }
   ],
+  "selection_icon": {
+    "diameter": 25
+  },
   "mesh_bounds": [
     14,
     14,
     18
+  ],
+  "placement_size": [
+    25,
+    25
   ],
   "TEMP_texelinfo": 19.5004
 }
