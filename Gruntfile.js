@@ -74,8 +74,8 @@ module.exports = function(grunt) {
     proc: {
       nuke: {
         src: [
-          'pa/units/land/nuke_launcher/nuke_launcher.json',
-          'pa/units/land/nuke_launcher/nuke_launcher_ammo.json'
+          'pa_ex1/units/land/nuke_launcher/nuke_launcher.json',
+          'pa_ex1/units/land/nuke_launcher/nuke_launcher_ammo.json'
         ],
         cwd: media,
         dest: 'pa/units/land/nuke_launcher/nuke_launcher.json',
@@ -87,8 +87,8 @@ module.exports = function(grunt) {
       },
       antinuke: {
         src: [
-          'pa/units/land/anti_nuke_launcher/anti_nuke_launcher.json',
-          'pa/units/land/anti_nuke_launcher/anti_nuke_launcher_ammo.json'
+          'pa_ex1/units/land/anti_nuke_launcher/anti_nuke_launcher.json',
+          'pa_ex1/units/land/anti_nuke_launcher/anti_nuke_launcher_ammo.json'
         ],
         cwd: media,
         dest: 'pa/units/land/anti_nuke_launcher/anti_nuke_launcher.json',

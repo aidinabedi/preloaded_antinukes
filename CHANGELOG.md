@@ -1,5 +1,6 @@
-## 2.1.1
+## 2.2.0
 
+- Switch to titans nuke cost
 - Fix changed api name
 
 ## 2.1.0
