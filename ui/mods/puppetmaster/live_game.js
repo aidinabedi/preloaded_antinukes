@@ -167,6 +167,15 @@
 
   var dropPodSpec = "/pa/puppetmaster/drop_pod_launcher.json"
 
+  var live_game_unit_specs = handlers.unit_specs
+  handlers.unit_specs = function(payload) {
+    payload[dropPodSpec] = {
+      name: 'Drop Pod Launcher',
+      sicon_override: 'avatar',
+    }
+    live_game_unit_specs(payload)
+  }
+
   // Count tracking
   var pasteCount = ko.observable(0)
   pasteCount.subscribe(function(count) {

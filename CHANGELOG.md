@@ -2,6 +2,7 @@
 
 - Switch to titans nuke cost
 - Fix changed api name
+- Drop pods trigger combat alerts; it has the uber/avatar icon but may be lost in existing combats
 
 ## 2.1.0
 

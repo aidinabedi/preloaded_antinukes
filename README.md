@@ -31,6 +31,7 @@ From there, select a player and a unit in the extra panels, and then you can use
 - Nukes and anti-nukes are preloaded with one missile, and the metal cost is increased proportionally.
 - As discovered in the video, extra commanders don't change the losing conditions - only original coms count for assassination.
 - Controlling a player stops army stat updates; the mod clears control flags when the spectator panel opened, but it can be easy to forget you need to re-select a player in order to paste.
+- Drop pods trigger combat alerts; it has the uber/avatar icon but may be lost in existing combats
 
 
 ## Development
