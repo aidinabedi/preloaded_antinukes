@@ -1,3 +1,7 @@
+## 2.3.0
+
+- Flares and pings will not be generated if strategic icons are turned off (default ctrl+y) The icon API is write-only; if it gets out of sync turn icons on (default state) and refresh the UI.
+
 ## 2.2.0
 
 - Switch to titans nuke cost

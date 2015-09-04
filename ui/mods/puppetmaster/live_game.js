@@ -227,6 +227,12 @@
     return engineCall.apply(this, arguments);
   }
 
+  var showAR = true
+  action_sets.general.show_hide_ar = function () {
+    api.arch.toggleAR()
+    showAR = !showAR
+  }
+
   var pasteUnits = function(n) {
     if (!model.cheatAllowCreateUnit()) return
     if (n < 1) return
@@ -235,9 +241,12 @@
     var army_id = model.players()[armyIndex()].id
 
     hdeck.raycastWithPlanet(mouseX, mouseY).then(function(result) {
-      flare(result, 4100)
+      console.log(showAR)
+      if (showAR) {
+        flare(result, 4100)
 
-      setTimeout(ping, 4000, armyIndex(), result)
+        setTimeout(ping, 4000, armyIndex(), result)
+      }
 
       var drop = {
         army: army_id,
