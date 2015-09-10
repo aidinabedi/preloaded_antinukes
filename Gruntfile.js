@@ -121,7 +121,16 @@ module.exports = function(grunt) {
               emit.spec.shader != 'meshParticle_clip_smoke_bend'
           })
           spec.emitters.forEach(function(emit) {
-            if (emit.spec.baseTexture == '/pa/effects/textures/particles/softSmoke.papa' && emit.type == 'Cylinder_Z') {
+            if (emit.spec.baseTexture == '/pa/effects/textures/particles/ring.papa') {
+              emit.spec.red = emit.spec.green = emit.spec.blue = 2
+              emit.useArmyColor = 1
+            } else if (emit.spec.baseTexture == '/pa/effects/textures/particles/flat.papa') {
+              emit.spec.green = emit.spec.red
+              emit.spec.blue = emit.spec.red
+              emit.useArmyColor = 1
+              emit.lifetime = emit.emitterLifetime = 5
+              emit.spec.sizeY = [[0, 0], [0.1, 1], [0.3, 1], [1,0]]
+            } else if (emit.spec.baseTexture == '/pa/effects/textures/particles/softSmoke.papa' && emit.type == 'Cylinder_Z') {
               // large expanding dust
               emit.alpha[0][1] = 0.15
             } else if (emit.spec.shape == 'pointlight') {
