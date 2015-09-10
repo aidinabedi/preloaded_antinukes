@@ -5,7 +5,9 @@ prompt.start()
 var modPath = '../../server_mods/com.wondible.pa.puppetmaster/'
 var stream = 'stable'
 var media = require('./lib/path').media(stream)
+var hack = require('./lib/path').media('hack')
 var build = 'ui/main/shared/js/build.js'
+var drop_pod = 'pa/puppetmaster/drop_pod.pfx'
 var live_game = 'ui/mods/puppetmaster/live_game.js'
 var live_game_devmode = 'ui/mods/puppetmaster/live_game_devmode.js'
 var live_game_players = 'ui/mods/puppetmaster/live_game_players.js'
@@ -47,6 +49,14 @@ module.exports = function(grunt) {
               'ui/**',
               'pa/**'],
             dest: modPath,
+          },
+        ],
+      },
+      hack: {
+        files: [
+          {
+            src: drop_pod,
+            dest: hack + drop_pod,
           },
         ],
       },
@@ -97,7 +107,31 @@ module.exports = function(grunt) {
           spec.build_metal_cost += ammo.build_metal_cost
           return spec
         }
-      }
+      },
+      droppod: {
+        src: [
+          'pa/effects/specs/default_commander_landing.pfx'
+        ],
+        cwd: media,
+        dest: drop_pod,
+        process: function(spec) {
+          spec.emitters = spec.emitters.filter(function(emit) {
+            // white shell / smoke shell
+            return emit.spec.papa != '/pa/effects/fbx/particles/sphere_ico16seg.papa' &&
+              emit.spec.shader != 'meshParticle_clip_smoke_bend'
+          })
+          spec.emitters.forEach(function(emit) {
+            if (emit.spec.baseTexture == '/pa/effects/textures/particles/softSmoke.papa' && emit.type == 'Cylinder_Z') {
+              // large expanding dust
+              emit.alpha[0][1] = 0.15
+            } else if (emit.spec.shape == 'pointlight') {
+              // bright blusih glow
+              emit.alpha = 0.05
+            }
+          })
+          return spec
+        }
+      },
     }
   });
 
