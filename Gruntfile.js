@@ -130,6 +130,13 @@ module.exports = function(grunt) {
               emit.useArmyColor = 1
               emit.lifetime = emit.emitterLifetime = 5
               emit.spec.sizeY = [[0, 0], [0.1, 1], [0.3, 1], [1,0]]
+            } else if (emit.spec.baseTexture == '/pa/effects/textures/particles/sharp_flare.papa' && emit.offsetZ == 900) {
+              emit.spec.red = emit.spec.green = emit.spec.blue = 1
+              if (emit.sizeX > 75) {
+                emit.useArmyColor = 1
+              } else {
+                emit.useArmyColor = 2
+              }
             } else if (emit.spec.baseTexture == '/pa/effects/textures/particles/softSmoke.papa' && emit.type == 'Cylinder_Z') {
               // large expanding dust
               emit.alpha[0][1] = 0.15
