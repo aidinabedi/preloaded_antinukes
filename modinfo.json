@@ -1,6 +1,7 @@
 {
   "author": "wondible",
   "build": "87296",
+  "category": ["nuke", "titans"],
   "context": "server",
   "date": "2015/09/10",
   "description": "Nukes and anti-nukes are preloaded with one missile, and the metal cost is increased proportionally.",

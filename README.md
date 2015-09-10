@@ -1,6 +1,6 @@
 # Preloaded NUkes
 
-Nukes and anti-nukes are preloaded with one missile, and the metal cost is increased proportionally.
+Nukes and anti-nukes are preloaded with one missile, and the metal cost is increased proportionally.  Stats are based on Titans.
 
 (Extracted from Puppetmaster)
 
