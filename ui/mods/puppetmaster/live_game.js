@@ -99,41 +99,6 @@
     })
   }
 
-  var flare = function(loc, time) {
-    var puppet = {
-      model: {
-        filename: land_mine,
-      }, 
-      location: {
-        planet: loc.planet,
-        pos: loc.pos,
-        scale: 4.2,
-      },
-      material: {
-        shader: "pa_unit_ghost",
-        constants: {
-          GhostColor: [0,0,1,0],
-          BuildInfo: [0,10,0,0],
-        },
-        textures: {
-          Diffuse: "/pa/effects/diffuse_texture.papa"
-        }
-      },
-      fx_offsets: [
-        {
-          bone: "bone_root",
-          filename: feature_burn,
-          offset: [ 0, 0, 0 ],
-          orientation: [ 0, 0, 0 ],
-        }
-      ],
-    }
-    var view = hdeck.view
-    view.puppet(puppet, true).then(function(r) {
-      setTimeout(removePuppet, time, view, r)
-    })
-  }
-
   // Spectator Announcement, including drop-pod effect
   var lastHover = {name: '', spec: ''}
   var selectedUnit = lastHover
@@ -243,8 +208,6 @@
     hdeck.raycastWithPlanet(mouseX, mouseY).then(function(result) {
       console.log(showAR)
       if (showAR) {
-        flare(result, 4100)
-
         setTimeout(ping, 4000, armyIndex(), result)
       }
 
