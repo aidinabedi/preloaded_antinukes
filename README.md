@@ -1,8 +1,8 @@
 # Preloaded NUkes
 
-Nukes and anti-nukes are preloaded with one missile, and the metal cost is increased proportionally.  Stats are based on Titans.
+Anti-nuke structures are preloaded with one missile, and the metal cost is increased proportionally. Does not apply to regular nukes. Stats are based on Titans.
 
-(Extracted from Puppetmaster)
+(Forked from JustinLove / wondible)
 
 ## Development
 
@@ -12,6 +12,6 @@ PA will upload **all files** in the mod directory, including `node_modules` and 
 
 ### Available Tasks
 
-- proc - modify nuke and antinuke units to preloaded versions
+- proc - modify antinuke unit to preloaded versions
 - copy:mod - copy the mod files into server_mods
 - default: proc, copy:mod
