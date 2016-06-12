@@ -1,13 +1,14 @@
 {
   "author": "aidinabedi",
   "build": "87296",
-  "category": ["anti", "nuke", "anti-nuke", "antinuke", "titans"],
+  "category": ["titans", "gameplay", "units", "anti", "nuke", "antinuke", "anti-nuke"],
   "context": "server",
   "date": "2016-06-12",
   "description": "Only anti-nukes are preloaded with one missile, and the metal cost is increased proportionally.",
   "display_name": "Preloaded Anti-Nukes (Only)",
-  "forum": null,
+  "forum": "https://github.com/aidinabedi/preloaded_antinukes",
   "identifier": "com.aidinabedi.pa.preloaded_antinukes",
   "signature": "not yet implemented",
-  "version": "1.0.1"
+  "version": "1.0.1",
+  "titansOnly": true
 }
