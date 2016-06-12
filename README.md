@@ -1,4 +1,4 @@
-# Preloaded NUkes
+# Preloaded Anti-Nukes (Only)
 
 Anti-nuke structures are preloaded with one missile, and the metal cost is increased proportionally. Does not apply to regular nukes. Stats are based on Titans.
 
